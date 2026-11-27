@@ -40,45 +40,15 @@ export async function deleteFormulation(id: string, projectId: string): Promise<
   redirect(`/projects/${projectId}`);
 }
 
-/** Copies a recipe and its ingredients into the next version of its code, to change it after testing. */
-export async function createVersion(id: string): Promise<FormState> {
+/**
+ * Copies a recipe and its composition into the next version of its code, to change it after testing.
+ * One transaction in the database (create_formulation_version), so it never leaves a half-made version.
+ */
+export async function createVersion(id: string, projectId: string): Promise<FormState> {
   const supabase = await requireUser();
-  const { data: f, error } = await supabase.from("formulations").select("*").eq("id", id).single();
+  const { data: newId, error } = await supabase.rpc("create_formulation_version", { source_formulation_id: id });
   if (error) return dbError(error);
-
-  const [last, ingredients] = await Promise.all([
-    supabase
-      .from("formulations")
-      .select("version")
-      .eq("project_id", f.project_id)
-      .eq("code", f.code)
-      .order("version", { ascending: false })
-      .limit(1)
-      .single(),
-    supabase.from("formulation_ingredients").select("product_id, quantity, notes").eq("formulation_id", id),
-  ]);
-  if (last.error) return dbError(last.error);
-  if (ingredients.error) return dbError(ingredients.error);
-
-  const { id: _id, owner_id: _owner, created_at: _created, ...copy } = f;
-  const next = await supabase
-    .from("formulations")
-    .insert({ ...copy, version: last.data.version + 1, parent_id: f.id, status: "draft" })
-    .select("id")
-    .single();
-  if (next.error) return dbError(next.error);
-
-  if (ingredients.data.length > 0) {
-    const copied = await supabase
-      .from("formulation_ingredients")
-      .insert(ingredients.data.map((i) => ({ ...i, formulation_id: next.data.id })));
-    if (copied.error) {
-      // shortcut: not a transaction; remove the half-made version by hand. Move to an RPC if this grows.
-      await supabase.from("formulations").delete().eq("id", next.data.id);
-      return dbError(copied.error);
-    }
-  }
-  redirect(path(f.project_id, next.data.id));
+  redirect(path(projectId, newId));
 }
 
 export async function addIngredient(formulationId: string, _: FormState, formData: FormData): Promise<FormState> {

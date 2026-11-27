@@ -8,7 +8,10 @@ export const experimentStatus = {
   cancelled: "Cancelado",
 };
 
-/** Completed and failed runs are recorded history: they freeze their recipe. */
+/**
+ * Completed and failed runs are recorded history: they freeze their recipe and stay recorded.
+ * The database enforces it; the UI uses this mirror only to show the right options.
+ */
 export const recordedStatus = { completed: experimentStatus.completed, failed: experimentStatus.failed };
 export const isRecorded = (status: string) => Object.hasOwn(recordedStatus, status);
 

@@ -14,12 +14,14 @@ export const productSchema = z.object({
   notes: optionalText,
 });
 
-/** True when the product has prices or appears in recipes (rows from `product_prices(count), formulation_ingredients(count)`). */
+/**
+ * True when the product has prices or appears in recipes (rows from `product_prices(count), formulation_ingredients(count)`).
+ * The database keeps such a product's size and unit; the UI uses this mirror only to show them as fixed.
+ */
 export const productInUse = (p: { product_prices: { count: number }[]; formulation_ingredients: { count: number }[] }) =>
   (p.product_prices[0]?.count ?? 0) + (p.formulation_ingredients[0]?.count ?? 0) > 0;
 
-// shortcut: no currency field, so every price takes the column default (DOP). The cost views add
-// amounts without looking at the currency; allow others once they group by currency.
+// No currency field: the database only accepts DOP for now (check product_prices_currency_dop).
 export const priceSchema = z.object({
   price: nonNegativeNumber,
   observed_on: z.iso.date("Fecha no válida"),

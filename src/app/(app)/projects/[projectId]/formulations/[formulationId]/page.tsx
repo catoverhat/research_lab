@@ -82,7 +82,7 @@ export default async function FormulationPage({
         {frozen && (
           <div className="warning flex flex-wrap items-center gap-3">
             <span>Tiene experimentos realizados: cantidades y productos congelados. Las notas siguen editables.</span>
-            <ActionForm action={createVersion.bind(null, f.id)}>
+            <ActionForm action={createVersion.bind(null, f.id, projectId)}>
               <SubmitButton className="btn btn-secondary">Crear versión nueva</SubmitButton>
             </ActionForm>
           </div>
@@ -228,7 +228,7 @@ export default async function FormulationPage({
           </div>
         </ActionForm>
         {!frozen && (
-          <ActionForm action={createVersion.bind(null, f.id)}>
+          <ActionForm action={createVersion.bind(null, f.id, projectId)}>
             <SubmitButton className="btn btn-secondary">Crear versión nueva</SubmitButton>
           </ActionForm>
         )}

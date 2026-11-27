@@ -2,16 +2,18 @@
 
 import { refresh } from "next/cache";
 import { redirect } from "next/navigation";
-import { productLabel } from "@/shared/format";
 import { dbError, type FormState, parseForm } from "@/shared/forms";
 import { type Client, requireUser } from "@/shared/supabase/server";
-import { priceSchema, productInUse, productSchema } from "./schema";
+import { priceSchema, productSchema } from "./schema";
 
-/** Id of the ingredient or supplier with that name, creating it if needed. Names are unique per owner. */
-async function idForName(supabase: Client, table: "ingredients" | "suppliers", name: string | null) {
+/**
+ * Id of the ingredient with that name, creating it if needed (names are unique per owner).
+ * If the product write after it fails, the ingredient stays: a reusable name, not half-written data.
+ */
+async function ingredientId(supabase: Client, name: string | null) {
   if (!name) return { id: null, error: null };
   const { data, error } = await supabase
-    .from(table)
+    .from("ingredients")
     .upsert({ name }, { onConflict: "owner_id,name" })
     .select("id")
     .single();
@@ -24,45 +26,31 @@ export async function createProduct(_: FormState, formData: FormData): Promise<F
   if (state) return state;
 
   const { ingredient, ...product } = data;
-  const ingredientId = await idForName(supabase, "ingredients", ingredient);
-  if (ingredientId.error) return dbError(ingredientId.error);
+  const ingredientRow = await ingredientId(supabase, ingredient);
+  if (ingredientRow.error) return dbError(ingredientRow.error);
 
   const { data: row, error } = await supabase
     .from("products")
-    .insert({ ...product, ingredient_id: ingredientId.id })
+    .insert({ ...product, ingredient_id: ingredientRow.id })
     .select("id")
     .single();
   if (error) return dbError(error);
   redirect(`/products/${row.id}`);
 }
 
+// The database keeps the size and unit of a product in use (trigger lock_used_product_presentation).
 export async function updateProduct(id: string, _: FormState, formData: FormData): Promise<FormState> {
   const supabase = await requireUser();
   const { data, state } = parseForm(productSchema, formData);
   if (state) return state;
 
   const { ingredient, ...product } = data;
-  const current = await supabase
-    .from("products")
-    .select("unit, package_size, product_prices(count), formulation_ingredients(count)")
-    .eq("id", id)
-    .single();
-  if (current.error) return dbError(current.error);
-  // Prices are per package and recipe quantities are in its unit: changing either rewrites history.
-  if (
-    productInUse(current.data) &&
-    (current.data.unit !== product.unit || current.data.package_size !== product.package_size)
-  )
-    return {
-      error: "Este producto ya tiene precios o está en recetas: su tamaño y unidad no cambian. Crea otro producto para esa presentación.",
-    };
-
-  const ingredientId = await idForName(supabase, "ingredients", ingredient);
-  if (ingredientId.error) return dbError(ingredientId.error);
+  const ingredientRow = await ingredientId(supabase, ingredient);
+  if (ingredientRow.error) return dbError(ingredientRow.error);
 
   const { error } = await supabase
     .from("products")
-    .update({ ...product, ingredient_id: ingredientId.id })
+    .update({ ...product, ingredient_id: ingredientRow.id })
     .eq("id", id);
   if (error) return dbError(error);
   refresh();
@@ -77,45 +65,23 @@ export async function deleteProduct(id: string): Promise<FormState> {
 }
 
 // Prices are append-only: there is no update or delete action on purpose.
+// add_product_price stores the price, its supplier and its source in one transaction.
 export async function addPrice(productId: string, _: FormState, formData: FormData): Promise<FormState> {
   const supabase = await requireUser();
   const { data, state } = parseForm(priceSchema, formData);
   if (state) return state;
 
-  const { supplier, source_url, ...price } = data;
-  const supplierId = await idForName(supabase, "suppliers", supplier);
-  if (supplierId.error) return dbError(supplierId.error);
-
-  let sourceId: string | null = null;
-  if (source_url) {
-    const { data: product, error } = await supabase
-      .from("products")
-      .select("brand, name, package_size, unit")
-      .eq("id", productId)
-      .single();
-    if (error) return dbError(error);
-    const source = await supabase
-      .from("sources")
-      .insert({
-        kind: "commercial",
-        title: `${supplier ?? "Precio"}: ${productLabel(product)}`,
-        url: source_url,
-        accessed_on: price.observed_on,
-      })
-      .select("id")
-      .single();
-    if (source.error) return dbError(source.error);
-    sourceId = source.data.id;
-  }
-
-  const { error } = await supabase
-    .from("product_prices")
-    .insert({ ...price, product_id: productId, supplier_id: supplierId.id, source_id: sourceId });
-  if (error) {
-    // shortcut: two requests, not a transaction; undo the source by hand. Move to an RPC if this grows.
-    if (sourceId) await supabase.from("sources").delete().eq("id", sourceId);
-    return dbError(error);
-  }
+  const { error } = await supabase.rpc("add_product_price", {
+    p_product_id: productId,
+    p_price: data.price,
+    p_observed_on: data.observed_on,
+    // undefined leaves the SQL default (null): the argument is simply not sent.
+    p_supplier: data.supplier ?? undefined,
+    p_in_stock: data.in_stock ?? undefined,
+    p_source_url: data.source_url ?? undefined,
+    p_notes: data.notes ?? undefined,
+  });
+  if (error) return dbError(error);
   refresh();
   return { ok: true };
 }

@@ -62,4 +62,25 @@ test("database errors map to form messages", () => {
     dbError({ code: "23514", message: "formulation already has recorded experiments; create a new version instead" }).error!,
     /versión nueva/,
   );
+  // The messages raised by supabase/migrations/20261127162447_domain_rules_in_database.sql.
+  assert.match(
+    dbError({
+      code: "23514",
+      message: "a recorded experiment cannot go back to planned or cancelled, nor change recipe; delete it instead",
+    }).error!,
+    /no vuelve a planificado/,
+  );
+  assert.match(
+    dbError({ code: "23514", message: "product has prices or is in recipes; create a new product for another presentation" })
+      .error!,
+    /tamaño y unidad no cambian/,
+  );
+  assert.match(
+    dbError({
+      code: "23514",
+      message: 'new row for relation "product_prices" violates check constraint "product_prices_currency_dop"',
+    }).error!,
+    /solo .* DOP/,
+  );
+  assert.match(dbError({ code: "P0002", message: "formulation not found" }).error!, /ya no existe/);
 });

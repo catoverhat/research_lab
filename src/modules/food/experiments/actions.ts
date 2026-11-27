@@ -4,7 +4,7 @@ import { refresh } from "next/cache";
 import { redirect } from "next/navigation";
 import { dbError, type FormState, parseForm } from "@/shared/forms";
 import { requireUser } from "@/shared/supabase/server";
-import { experimentSchema, isRecorded, newExperimentSchema } from "./schema";
+import { experimentSchema, newExperimentSchema } from "./schema";
 
 export async function createExperiment(projectId: string, _: FormState, formData: FormData): Promise<FormState> {
   const supabase = await requireUser();
@@ -21,19 +21,12 @@ export async function createExperiment(projectId: string, _: FormState, formData
   redirect(`/projects/${row.formulations?.project_id ?? projectId}/experiments/${row.id}`);
 }
 
-// Marking an experiment completed or failed freezes its recipe's composition (database trigger).
+// Recording a run (completed/failed) freezes its recipe, and the database keeps it recorded
+// (triggers lock_tested_formulation_ingredients and keep_recorded_experiments_recorded).
 export async function updateExperiment(id: string, _: FormState, formData: FormData): Promise<FormState> {
   const supabase = await requireUser();
   const { data, state } = parseForm(experimentSchema, formData);
   if (state) return state;
-
-  const current = await supabase.from("experiments").select("status").eq("id", id).single();
-  if (current.error) return dbError(current.error);
-  // Going back to planned or cancelled would silently unfreeze the recipe; deleting is the explicit way.
-  if (isRecorded(current.data.status) && !isRecorded(data.status))
-    return {
-      error: "Un experimento realizado o fallido no vuelve a planificado ni a cancelado. Si se registró por error, bórralo.",
-    };
 
   const { error } = await supabase.from("experiments").update(data).eq("id", id);
   if (error) return dbError(error);

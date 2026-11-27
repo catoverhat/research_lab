@@ -47,6 +47,9 @@ Todas las tablas tienen además `owner_id → auth.users` (omitido en el diagram
 | 9 | La historia no se borra en cascada: un experimento bloquea el borrado de su formulación, y un ingrediente de receta bloquea el de su producto. Al borrar un usuario se borra todo lo suyo. | Para borrar un proyecto con experimentos hay que borrar antes esos experimentos a propósito. Lo normal es archivarlo (`status = 'archived'`). |
 | 10 | Los adjuntos van en el bucket privado `attachments`, bajo la ruta `<uid>/...`. Un `check` obliga a que `attachments.storage_path` empiece por el `owner_id`. | Las políticas de Storage y los metadatos usan la misma regla de carpeta. |
 | 11 | Claves naturales únicas: `ingredients(owner, name)`, `suppliers(owner, name)`, `products(owner, brand, name, package_size, unit)`, `formulations(project, code, version)`, `research_reports(project, version)`. | Permiten importar con upsert sin duplicar. |
+| 12 | Un trigger impide que un experimento `completed` o `failed` vuelva a `planned` o `cancelled`, o cambie de receta. Borrarlo sigue permitido. | Volver atrás descongelaría su receta sin aviso. Borrar es la forma explícita de deshacerlo (confirmado por el usuario el 2026-11-27). |
+| 13 | Un trigger impide cambiar `package_size` o `unit` de un producto con precios o en recetas. | Los precios son por envase y las cantidades van en su unidad: cambiarlos reescribiría el coste histórico y el sentido de las recetas. Otra presentación es otro producto. |
+| 14 | Las operaciones de varios pasos son funciones SQL (`security invoker`): `create_formulation_version` (copia receta y composición a la versión siguiente) y `add_product_price` (precio, proveedor por nombre y fuente comercial). | Una transacción por operación: un fallo a mitad no deja nada a medias. Corren con el RLS de quien llama. |
 
 ## Vistas (todas `security_invoker = true`, así respetan el RLS de quien consulta)
 
@@ -81,8 +84,10 @@ El JSON incluye: el proyecto, las hipótesis, los hallazgos, las formulaciones (
 - Las 15 tablas tienen RLS activado, `revoke all from anon, authenticated`, `grant select, insert, update, delete to authenticated` y cuatro políticas (`select`, `insert`, `update` y `delete`) con `(select auth.uid()) = owner_id`.
 - `owner_id` tiene índice en todas las tablas, y cada FK tiene un índice que la encabeza.
 - Las vistas solo tienen `grant select to authenticated`. `anon` no ve nada salvo `public.keepalive()`.
-- Las funciones son `security invoker` con `search_path = ''`. No hay ninguna `security definer`.
-- Los tests están en `supabase/tests/research_core.sql`. Prueban accesos permitidos y denegados (otro usuario, `anon` y Storage), el bloqueo de formulaciones, los cálculos de las vistas y el borrado de un usuario.
+- Las funciones son `security invoker` con `search_path = ''`. No hay ninguna `security definer`. Las de trigger no las puede ejecutar ningún rol de la API, y las dos funciones de dominio solo `authenticated`.
+- Los tests están en `supabase/tests/`:
+  - `research_core.sql` prueba accesos permitidos y denegados (otro usuario, `anon` y Storage), el bloqueo de formulaciones, los cálculos de las vistas y el borrado de un usuario.
+  - `domain_rules.sql` prueba las decisiones 12 a 14, el check de moneda y que los borrados en cascada siguen funcionando.
 
 ## Importación de los datos históricos (fase 2)
 
@@ -134,17 +139,9 @@ Las notas anteriores se normalizaron con `research/chocolate/fixes/2026-11-27_no
 
 Una corrección de datos (no de esquema) va en `research/<tema>/fixes/<fecha>_<nombre>.sql`, como cuerpo PL/pgSQL, y se ejecuta con `research/run-as-owner.mjs <owner-uuid> <body.sql> <out.sql> [--dry-run]`. Igual que la importación, es una sola sentencia que entra como el dueño. Cada `update` localiza la fila por su clave natural y por su valor actual, y comprueba cuántas filas tocó (`get diagnostics n = row_count`). Si algo no coincide, no se guarda nada.
 
-## Reglas que hoy aplica la app, no la base
-
-Las Server Actions las comprueban, pero un script o una consulta directa se las salta. Si se usan otras vías de escritura, hay que pasarlas a triggers.
-
-- Un experimento `completed` o `failed` no vuelve a `planned` ni a `cancelled`, porque eso descongelaría su receta (`src/modules/food/experiments/actions.ts`).
-- Un producto con precios o en recetas no cambia `package_size` ni `unit`, porque reescribiría el coste histórico y el sentido de las cantidades (`src/core/products/actions.ts`).
-- El formulario de precios no pide moneda: todo queda en el `DOP` por defecto (ver el primer atajo).
-
 ## Atajos conocidos
 
-- `shortcut:` las vistas suman importes sin mirar la moneda (por defecto `DOP`). Cuando aparezca una segunda moneda, hay que agrupar por `currency`.
+- `shortcut:` las vistas suman importes sin mirar la moneda, así que el check `product_prices_currency_dop` solo acepta `DOP`. Para admitir otra moneda, en la misma migración hay que quitar el check y agrupar las vistas por `currency`.
 - Las FK no comprueban que la fila referenciada sea del mismo dueño. Un usuario podría referenciar el uuid de otro, pero no leerlo (el RLS lo impide y los uuid no se pueden adivinar). Si algún día hay datos compartidos, se pasaría a FK compuestas `(id, owner_id)`.
 - Cada experimento pone a prueba como máximo una hipótesis (`experiments.hypothesis_id`). Si hace falta más, se añadiría una tabla puente.
 - `formulations.servings` sigue editable después de congelar la receta. Cambiarlo altera el coste por ración de los experimentos pasados.

@@ -625,7 +625,13 @@ isOneToOne: false
                 }
           }
           Functions: {
-            "keepalive":
+            "add_product_price":
+{ Args: { "p_in_stock"?: boolean,"p_notes"?: string,"p_observed_on": string,"p_price": number,"p_product_id": string,"p_source_url"?: string,"p_supplier"?: string }; Returns: string
+                           },
+"create_formulation_version":
+{ Args: { "source_formulation_id": string }; Returns: string
+                           },
+"keepalive":
 { Args: Record<PropertyKey, never>; Returns: number
                            }
           }
