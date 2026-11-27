@@ -1,6 +1,6 @@
 begin;
 
-select plan(27);
+select plan(39);
 
 insert into auth.users (id, raw_app_meta_data, raw_user_meta_data) values
   ('10000000-0000-0000-0000-00000000000a', '{}', '{}'),
@@ -10,6 +10,62 @@ select is(
   (select count(*) from pg_tables where schemaname = 'public' and not rowsecurity),
   0::bigint,
   'every public table has RLS enabled'
+);
+
+-- Grants are explicit: local default privileges must not hide a missing one.
+select is(
+  (select count(*) from pg_class
+   where relnamespace = 'public'::regnamespace and relkind in ('r', 'v')
+     and has_table_privilege('anon', oid, 'select,insert,update,delete')),
+  0::bigint,
+  'anon has no privileges on any public table or view'
+);
+
+select is(
+  (select count(*) from pg_class
+   where relnamespace = 'public'::regnamespace and relkind in ('r', 'v')
+     and not has_table_privilege('authenticated', oid, 'select')),
+  0::bigint,
+  'authenticated can read every public table and view'
+);
+
+select is(
+  (select count(*) from pg_class
+   where relnamespace = 'public'::regnamespace and relkind = 'v'
+     and has_table_privilege('authenticated', oid, 'insert,update,delete')),
+  0::bigint,
+  'views are read-only for authenticated'
+);
+
+select is(
+  array[
+    has_function_privilege('anon', 'public.keepalive()', 'execute'),
+    has_function_privilege('authenticated', 'public.keepalive()', 'execute'),
+    has_function_privilege('service_role', 'public.keepalive()', 'execute')
+  ],
+  array[true, false, false],
+  'only anon can call keepalive'
+);
+
+select is(
+  array[
+    has_function_privilege('anon', 'public.lock_tested_formulation_ingredients()', 'execute'),
+    has_function_privilege('authenticated', 'public.lock_tested_formulation_ingredients()', 'execute'),
+    has_function_privilege('service_role', 'public.lock_tested_formulation_ingredients()', 'execute')
+  ],
+  array[false, false, false],
+  'no API role can call the trigger function'
+);
+
+select is(
+  (select count(*) from pg_tables t
+   where t.schemaname = 'public'
+     and (select count(*) from pg_policies p
+          where p.schemaname = 'public' and p.tablename = t.tablename
+            and p.roles = '{authenticated}'
+            and coalesce(p.qual, p.with_check) like '%auth.uid()%owner_id%') <> 4),
+  0::bigint,
+  'every public table has four owner policies for authenticated'
 );
 
 -- User A records a small study through the API role, never passing owner_id.
@@ -29,9 +85,10 @@ insert into public.product_prices (product_id, price, observed_on) values
   ('30000000-0000-0000-0000-000000000001', 150, '2026-06-01'),
   ('30000000-0000-0000-0000-000000000002', 80, '2026-01-01');
 
-insert into public.product_nutrition (product_id, energy_kcal) values
-  ('30000000-0000-0000-0000-000000000001', 400),
-  ('30000000-0000-0000-0000-000000000002', 50);
+-- Only cacao declares fat, so the fat total of F01 is incomplete.
+insert into public.product_nutrition (product_id, energy_kcal, fat_g) values
+  ('30000000-0000-0000-0000-000000000001', 400, 20),
+  ('30000000-0000-0000-0000-000000000002', 50, null);
 
 insert into public.formulations (id, project_id, code, servings)
 values ('40000000-0000-0000-0000-000000000001', '20000000-0000-0000-0000-000000000001', 'F01', 2);
@@ -76,6 +133,12 @@ select is(
   (select energy_kcal from public.v_formulation_nutrition where code = 'F01'),
   225::numeric,
   'nutrition is per serving ((200 + 250) kcal / 2)'
+);
+
+select is(
+  (select fat_g from public.v_formulation_nutrition where code = 'F01'),
+  null::numeric,
+  'a nutrient total is null when any ingredient lacks that value'
 );
 
 select is(
@@ -134,6 +197,16 @@ select lives_ok(
   'a new version of the formulation can be edited'
 );
 
+-- Canela has no nutrition row at all.
+insert into public.formulation_ingredients (formulation_id, product_id, quantity)
+values ('40000000-0000-0000-0000-000000000002', '30000000-0000-0000-0000-000000000003', 1);
+
+select ok(
+  (select energy_kcal is null and ingredients_without_nutrition = 1
+   from public.v_formulation_nutrition where formulation_id = '40000000-0000-0000-0000-000000000002'),
+  'an ingredient without nutrition data makes totals null and is counted'
+);
+
 -- Attachments and storage stay inside the owner's folder.
 select throws_ok(
   $$ insert into public.attachments (storage_path, kind)
@@ -177,7 +250,41 @@ select throws_ok(
 update public.research_projects set title = 'hacked' where id = '20000000-0000-0000-0000-000000000001';
 delete from public.product_prices;
 
+-- The Storage API sets this before deleting; with it, only RLS decides.
+select set_config('storage.allow_delete_query', 'true', true);
+update storage.objects set name = '10000000-0000-0000-0000-00000000000b/label.jpg' where bucket_id = 'attachments';
+delete from storage.objects where bucket_id = 'attachments';
+
 select set_config('request.jwt.claims', '{"sub":"10000000-0000-0000-0000-00000000000a","role":"authenticated"}', true);
+
+select is(
+  (select name from storage.objects where bucket_id = 'attachments'),
+  '10000000-0000-0000-0000-00000000000a/label.jpg',
+  'another user cannot rename or delete attachment files'
+);
+
+update storage.objects set name = '10000000-0000-0000-0000-00000000000a/label-v2.jpg' where bucket_id = 'attachments';
+
+select is(
+  (select name from storage.objects where bucket_id = 'attachments'),
+  '10000000-0000-0000-0000-00000000000a/label-v2.jpg',
+  'an owner can rename a file inside their folder'
+);
+
+select throws_ok(
+  $$ update storage.objects set name = '10000000-0000-0000-0000-00000000000b/label.jpg'
+     where bucket_id = 'attachments' $$,
+  '42501', null,
+  'an owner cannot move a file into another user folder'
+);
+
+delete from storage.objects where bucket_id = 'attachments';
+
+select is(
+  (select count(*) from storage.objects where bucket_id = 'attachments'),
+  0::bigint,
+  'an owner can delete their files'
+);
 
 select is(
   (select title from public.research_projects where id = '20000000-0000-0000-0000-000000000001'),

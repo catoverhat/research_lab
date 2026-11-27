@@ -2,17 +2,16 @@
 
 | Fase | Alcance | Estado |
 |------|---------|--------|
-| 1 | Modelo de datos, RLS, vistas, exportación JSON, keepalive, documentación | Desplegado en el proyecto hosted `rbdkuhjzkngjppqseyak` (us-east-1, Postgres 17). Faltan los pasos de abajo |
+| 1 | Modelo de datos, RLS, vistas, exportación JSON, keepalive, documentación | Desplegado en el proyecto hosted `rbdkuhjzkngjppqseyak` (us-east-1, Postgres 17). Keepalive verificado |
 | 2 | Importar la investigación del chocolate (JSON de ChatGPT → script en una transacción) | Pendiente de recibir los JSON |
-| 3 | Next.js: auth y CRUD de productos, precios, formulaciones y experimentos | Pendiente |
+| 3 | Next.js: auth (Turnstile antes de publicar; passkeys, comprobando qué ofrece Supabase Auth en el plan Free) y CRUD de productos, precios, formulaciones y experimentos | Pendiente |
 | 4 | Dashboard económico y sensorial (Recharts sobre las vistas) | Pendiente |
 | 5 | Integración con IA (exportación JSON y luego MCP de solo lectura) | Pendiente |
 | 6 | Informes PDF a partir de `research_reports` | Pendiente |
 | 7 | Optimización y comparación de formulaciones | Pendiente |
 
-## Pendiente para cerrar la fase 1
+## Estado de la fase 1
 
-Hecho: proyecto creado, enlazado, Postgres 17 comprobado y las dos migraciones aplicadas y verificadas.
-
-1. GitHub: confirmar que el repo es **privado** y añadir los secrets `SUPABASE_URL` y `SUPABASE_PUBLISHABLE_KEY`. Luego, en Actions → `supabase-keepalive` → Run workflow, comprobar que responde `1`.
-2. Auth en el dashboard de Supabase: activar los inicios de sesión anónimos, la vinculación manual y Turnstile (`config.toml` solo configura el entorno local).
+- Proyecto hosted creado, enlazado y con Postgres 17. Migraciones aplicadas y verificadas.
+- Repo privado en GitHub con los secrets `SUPABASE_URL` y `SUPABASE_PUBLISHABLE_KEY`. El workflow `supabase-keepalive` responde `1`.
+- Auth en el dashboard: confirmación de email desactivada. Turnstile se activa en la fase 3, cuando exista el dominio del frontend (`config.toml` solo configura el entorno local).

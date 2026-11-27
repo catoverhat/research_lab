@@ -60,7 +60,7 @@ Todas las tablas tienen además `owner_id → auth.users` (omitido en el diagram
 | `v_sensory_comparison` | Media por formulación y atributo, solo de experimentos `completed` |
 | `v_research_context` | Un JSON por proyecto con todo lo necesario para retomar la investigación |
 
-Los contadores `ingredients_without_*` avisan cuando un coste o una nutrición es parcial. Un total parcial nunca se presenta como completo.
+Los contadores `ingredients_without_*` avisan cuando un coste o una nutrición es parcial. Un total parcial nunca se presenta como completo. En `v_formulation_nutrition`, cada nutriente es `null` si algún ingrediente no tiene ese dato (las etiquetas no siempre declaran fibra o sodio), y el contador indica los ingredientes sin ficha nutricional.
 
 ## Exportar el contexto de una investigación
 
