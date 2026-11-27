@@ -20,6 +20,7 @@ Fase 3: frontend Next.js (auth y CRUD), ya hecho en local y pendiente de publica
 - Antes de usar una API de Next.js, lee su guía en `node_modules/next/dist/docs/`: esta versión cambia APIs y convenciones (`proxy.ts` en vez de `middleware.ts`, `refresh()`, TypeScript 7 con el CLI).
 - Cada página y cada Server Action empieza con `requireUser()`. Valida con Zod en el servidor (`src/shared/forms.ts`). No uses la clave secreta en la app.
 - Local: la app va en `http://localhost:3000`, no en `127.0.0.1`, porque las passkeys no aceptan una IP como RP ID. Tras cambiar el código: `pnpm typecheck`, `pnpm test` y `pnpm build`.
+- Antes de hacer commit de cambios en el frontend, pasa el agente `nextjs-reviewer` y, si cambian pantallas, `ui-ux-reviewer`. Usan las skills de Vercel de `.claude/skills/` (origen y licencia en `NOTICE.md`).
 
 Versiones: usa siempre la última versión estable de cada herramienta y dependencia (Next.js, Supabase CLI, TypeScript, pnpm…). Antes de subir una versión mayor, lee su guía oficial de migración.
 
