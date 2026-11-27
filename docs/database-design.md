@@ -41,7 +41,7 @@ Todas las tablas tienen además `owner_id → auth.users` (omitido en el diagram
 | 3 | `formulation_ingredients.quantity` va en la unidad del producto (`g`, `ml` o `unit`). | Coste y nutrición salen sin tablas de conversión. Las tazas o cucharadas se convierten al registrar. |
 | 4 | `product_prices` solo se añade: un precio nuevo es una fila nueva. | Así se conserva el historial. Un experimento se costea con el último precio observado **en o antes** de su fecha, sin guardar copias de precios. |
 | 5 | Una formulación es una versión de receta: `(project_id, code, version)`, con `parent_id` apuntando a la versión anterior. | Separa la receta (F05) de sus ejecuciones. Se puede repetir F05 diez veces sin tocarla. |
-| 6 | Un trigger congela los ingredientes de una formulación en cuanto tiene un experimento `completed` o `failed`. | Si se editara la receta, se reescribiría en silencio lo que se usó en los experimentos pasados. Para cambiarla se crea `version + 1`. El nombre, las notas y el estado siguen editables. |
+| 6 | Un trigger congela la composición de una formulación (qué productos y en qué cantidad) en cuanto tiene un experimento `completed` o `failed`. | Si se editara la receta, se reescribiría en silencio lo que se usó en los experimentos pasados. Para cambiarla se crea `version + 1`. Siguen editables el nombre, las notas y el estado de la receta, y las notas de sus ingredientes. |
 | 7 | `sensory_evaluations` guarda una fila por evaluador y atributo, con un score de 0 a 10. El atributo es texto libre. | Sirve para cualquier receta (amargor en chocolate, salinidad en otra) sin cambiar el esquema. Por convención, `overall` es la nota global. |
 | 8 | Hay tres ejes de evidencia: `experiments.status` (planificado o realizado), `hypotheses.status` y `findings.evidence_level` (`confirmed`, `preliminary`, `anecdotal`). | Separa lo comprobado, las hipótesis y lo pendiente. |
 | 9 | La historia no se borra en cascada: un experimento bloquea el borrado de su formulación, y un ingrediente de receta bloquea el de su producto. Al borrar un usuario se borra todo lo suyo. | Para borrar un proyecto con experimentos hay que borrar antes esos experimentos a propósito. Lo normal es archivarlo (`status = 'archived'`). |
@@ -128,7 +128,11 @@ Las notas (`notes` de productos, precios, recetas, ingredientes y fuentes) regis
 | `Observación:` | Algo que se notó y no es un dato (una coincidencia o una sospecha) |
 | `Pendiente:` | Falta verificarlo |
 
-Las notas anteriores al 2026-11-27 no siguen todas este formato.
+Las notas anteriores se normalizaron con `research/chocolate/fixes/2026-11-27_normalize-notes.sql`.
+
+### Correcciones de datos
+
+Una corrección de datos (no de esquema) va en `research/<tema>/fixes/<fecha>_<nombre>.sql`, como cuerpo PL/pgSQL, y se ejecuta con `research/run-as-owner.mjs <owner-uuid> <body.sql> <out.sql> [--dry-run]`. Igual que la importación, es una sola sentencia que entra como el dueño. Cada `update` localiza la fila por su clave natural y por su valor actual, y comprueba cuántas filas tocó (`get diagnostics n = row_count`). Si algo no coincide, no se guarda nada.
 
 ## Atajos conocidos
 

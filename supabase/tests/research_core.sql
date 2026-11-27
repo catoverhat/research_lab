@@ -1,6 +1,6 @@
 begin;
 
-select plan(40);
+select plan(42);
 
 insert into auth.users (id, raw_app_meta_data, raw_user_meta_data) values
   ('10000000-0000-0000-0000-00000000000a', '{}', '{}'),
@@ -192,6 +192,23 @@ select throws_ok(
      where formulation_id = '40000000-0000-0000-0000-000000000001' $$,
   '23514', 'formulation already has recorded experiments; create a new version instead',
   'cannot remove ingredients from a tested formulation'
+);
+
+update public.formulation_ingredients set notes = 'Observación: nota añadida después de probarla'
+where formulation_id = '40000000-0000-0000-0000-000000000001';
+
+select is(
+  (select count(*) from public.formulation_ingredients
+   where formulation_id = '40000000-0000-0000-0000-000000000001' and notes = 'Observación: nota añadida después de probarla'),
+  2::bigint,
+  'ingredient notes of a tested formulation stay editable'
+);
+
+select throws_ok(
+  $$ update public.formulation_ingredients set quantity = 60, notes = 'cambio mixto'
+     where formulation_id = '40000000-0000-0000-0000-000000000001' $$,
+  '23514', 'formulation already has recorded experiments; create a new version instead',
+  'editing notes does not let the quantity change with them'
 );
 
 insert into public.formulations (id, project_id, code, version, parent_id, servings)

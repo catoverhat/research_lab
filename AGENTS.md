@@ -20,7 +20,7 @@ Versiones: usa siempre la última versión estable de cada herramienta y depende
 
 - No inventes información experimental, precios ni valores nutricionales. Lo que no se sabe queda `null`.
 - Distingue lo comprobado (`findings.evidence_level = 'confirmed'`), lo preliminar, las hipótesis (`hypotheses`) y lo planificado (`experiments.status = 'planned'`).
-- Los precios solo se añaden. Una receta con experimentos realizados no se edita: se crea `version + 1` con `parent_id`.
+- Los precios solo se añaden. Una receta con experimentos realizados no cambia su composición (productos y cantidades): se crea `version + 1` con `parent_id`. Sus notas sí se pueden editar.
 - Las cantidades de receta van en la unidad del producto (`g`, `ml` o `unit`).
 
 ## Supabase: proyecto propio, mismo flujo que shots-bar
