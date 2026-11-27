@@ -15,7 +15,7 @@
 1. Crear el proyecto en Supabase (plan Free) y obtener su `PROJECT_REF`.
 2. Enlazarlo: `pnpm exec supabase link --project-ref <PROJECT_REF>`.
 3. Comprobar con `SHOW server_version;` que la versión mayor coincide con `[db] major_version = 17` en `supabase/config.toml`.
-4. Ejecutar `pnpm supabase:db:push:dry-run`, revisarlo, aprobarlo y lanzar `pnpm exec supabase db push --linked`.
+4. Ejecutar `pnpm supabase:db:push:dry-run`, revisarlo, aprobarlo y lanzar `pnpm exec supabase db push --remote`.
 5. Comprobar con `pnpm supabase:migrations:list` y `pnpm supabase:types:remote` (sin diff).
 6. GitHub: confirmar que el repo es **privado** y añadir los secrets `SUPABASE_URL` y `SUPABASE_PUBLISHABLE_KEY`. Luego, en Actions → `supabase-keepalive` → Run workflow, comprobar que responde `1`.
 7. Auth en el dashboard de Supabase: activar los inicios de sesión anónimos, la vinculación manual y Turnstile (`config.toml` solo configura el entorno local).

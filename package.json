@@ -7,18 +7,18 @@
     "supabase:start": "supabase start",
     "supabase:stop": "supabase stop",
     "supabase:status": "supabase status",
-    "supabase:migrations:list": "supabase migration list --linked",
+    "supabase:migrations:list": "supabase migration list --remote",
     "supabase:migration:new": "supabase migration new",
-    "supabase:migrations:up:local": "supabase migration up --local",
-    "supabase:db:reset:local": "supabase db reset --local",
-    "supabase:test:local": "supabase test db --local",
-    "supabase:db:push:dry-run": "supabase db push --linked --dry-run",
-    "supabase:types": "supabase gen types typescript --local --schema public > src/shared/database/database.types.ts",
-    "supabase:types:remote": "supabase gen types typescript --linked --schema public > src/shared/database/database.types.ts"
+    "supabase:migrations:up:local": "supabase migration up",
+    "supabase:db:reset:local": "supabase db reset",
+    "supabase:test:local": "supabase test db",
+    "supabase:db:push:dry-run": "supabase db push --dry-run --remote",
+    "supabase:types": "supabase gen types typescript --schema public > src/shared/database/database.types.ts",
+    "supabase:types:remote": "supabase gen types typescript --schema public --remote > src/shared/database/database.types.ts"
   },
   "devDependencies": {
-    "supabase": "2.75.0",
-    "typescript": "^5.9.3"
+    "supabase": "3.4.0",
+    "typescript": "^7.0.2"
   },
-  "packageManager": "pnpm@12.8.1"
+  "packageManager": "pnpm@12.23.0"
 }

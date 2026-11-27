@@ -14,6 +14,8 @@ Lee antes de trabajar:
 
 Fase 1: base de datos. **No** construyas frontend ni integración con IA hasta que el plan lo indique. No añadas dependencias que la fase actual no necesite.
 
+Versiones: usa siempre la última versión estable de cada herramienta y dependencia (Next.js, Supabase CLI, TypeScript, pnpm…). Antes de subir una versión mayor, lee su guía oficial de migración.
+
 ## Reglas de datos
 
 - No inventes información experimental, precios ni valores nutricionales. Lo que no se sabe queda `null`.
@@ -26,7 +28,7 @@ Fase 1: base de datos. **No** construyas frontend ni integración con IA hasta q
 Antes de cambiar algo de Supabase, consulta la documentación oficial: https://supabase.com/docs.
 
 - `supabase/migrations/` es la fuente de verdad. Cada cambio va en una migración nueva, solo hacia adelante. **Nunca** edites una migración ya aplicada.
-- Todo comando que cambie estado lleva `--local` o `--linked` explícito. Si el destino es ambiguo, para.
+- Sin destino, el CLI (v3) actúa sobre el stack local. Todo lo que toque el proyecto hosted lleva `--remote` explícito y al final del comando. Si el destino es ambiguo, para.
 - En cada tabla nueva:
   - columna `owner_id uuid not null default auth.uid() references auth.users (id) on delete cascade`;
   - RLS activado;
@@ -43,14 +45,14 @@ Antes de cambiar algo de Supabase, consulta la documentación oficial: https://s
   5. Commit
   6. `pnpm supabase:db:push:dry-run`
   7. Aprobación explícita del usuario
-  8. `pnpm exec supabase db push --linked` (a propósito, no tiene alias)
+  8. `pnpm exec supabase db push --remote` (a propósito, no tiene alias). Sin terminal interactiva, el CLI exige `--yes`; úsalo solo después del paso 7.
   9. `pnpm supabase:migrations:list` y `pnpm supabase:types:remote`
-- Prohibido salvo que el usuario lo pida: `db reset --linked`, `db push --include-seed`, `migration repair`.
+- Prohibido salvo que el usuario lo pida: `db reset --remote`, `db push --include-seed`, `migration repair`.
 - No hagas commit de `supabase/.temp/`, `supabase/.branches/`, `.env*`, claves ni volcados de datos reales.
 
 ### Docker en Windows
 
-- `supabase db reset --local` puede terminar con `Error status 502` **después** de `Restarting containers...`. Eso es la salud de Storage o Kong al reiniciar, no la migración. Si las migraciones aparecen como `Applying migration ...` sin error, la base está bien.
+- `pnpm supabase:db:reset:local` puede terminar con `Error status 502` **después** de `Restarting containers...`. Eso es la salud de Storage o Kong al reiniciar, no la migración. Si las migraciones aparecen como `Applying migration ...` sin error, la base está bien.
 - Si después la API sigue en 502: `pnpm supabase:stop`, luego `pnpm supabase:start`.
 - El contenedor `vector` (logs) entra en bucle de reinicios porque no alcanza el daemon de Docker. Si bloquea `supabase start` por conflicto de nombre, elimina solo ese contenedor: `docker rm -f supabase_vector_food_research_lab`.
 

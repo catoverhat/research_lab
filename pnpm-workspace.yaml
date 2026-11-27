@@ -1,5 +1,2 @@
 packages:
   - "."
-
-allowBuilds:
-  supabase: true
