@@ -8,7 +8,7 @@ Plataforma de investigación gastronómica. El primer caso es la optimización d
 |----|-----------|----------------|
 | RF-01 | Registrar proyectos de investigación con objetivo, alcance y estado | `research_projects` |
 | RF-02 | Catálogo de ingredientes genéricos y de productos comerciales (marca y presentación) | `ingredients`, `products` |
-| RF-03 | Información nutricional normalizada por producto | `product_nutrition` |
+| RF-03 | Información nutricional normalizada por producto: de su etiqueta o, si la etiqueta no tiene tabla, de una base de referencia oficial, con la fuente indicada | `product_nutrition`, `sources` |
 | RF-04 | Historial de precios y disponibilidad por proveedor | `product_prices`, `suppliers`, `v_price_history` |
 | RF-05 | Formulaciones versionadas, separadas de sus ejecuciones | `formulations`, `formulation_ingredients` |
 | RF-06 | Varias ejecuciones (experimentos) por formulación, planificadas o realizadas | `experiments` |

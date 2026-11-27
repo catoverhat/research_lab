@@ -1,0 +1,28 @@
+{
+  "observed_on": "2026-11-27",
+  "project": "Optimización experimental del chocolate a la taza",
+  "method": "Valores de referencia para productos cuya etiqueta no tiene tabla nutricional. No son datos de etiqueta. Decisión del usuario del 2026-11-27.",
+  "labels": [
+    {
+      "product": { "name": "Canela molida Líder", "package_size": 80, "unit": "g" },
+      "source": {
+        "kind": "bibliographic",
+        "title": "USDA FoodData Central: Spices, cinnamon, ground (FDC 171320, SR Legacy)",
+        "url": "https://fdc.nal.usda.gov/food-details/171320/nutrients"
+      },
+      "basis_quantity": 100,
+      "values": {
+        "energy_kcal": 247,
+        "fat_g": 1.24,
+        "saturated_fat_g": 0.345,
+        "carbohydrates_g": 80.59,
+        "sugars_g": 2.17,
+        "fiber_g": 53.1,
+        "protein_g": 3.99,
+        "sodium_mg": 10
+      },
+      "notes": "Referencia, no etiqueta: Canela Líder declara 100% canela y no tiene tabla nutricional. Valores por 100 g publicados por USDA el 2019-04-01. USDA no indica la especie (Ceilán o cassia); la de Líder es desconocida (hipótesis H05).",
+      "product_note": "Nutrición de referencia USDA FDC 171320 (2026-11-27), no de etiqueta."
+    }
+  ]
+}

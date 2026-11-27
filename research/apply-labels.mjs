@@ -5,8 +5,10 @@
 //   pnpm exec supabase db query --file <out.sql>                   (local)
 //   pnpm exec supabase db query --file <out.sql> --remote --yes    (hosted, after approval)
 //
-// Each label adds a 'label' source and replaces the product's whole nutrition row (nutrients the
-// label omits become null). A product is found by name + package_size + unit and must exist once.
+// Each entry adds a source and replaces the product's whole nutrition row (nutrients it omits become
+// null). The source is the label by default; a product without a nutrition table can instead use a
+// reference database: "source": { "kind": "bibliographic", "title": ..., "url": ... }.
+// A product is found by name + package_size + unit and must exist once.
 import { readFileSync, writeFileSync } from 'node:fs';
 
 const [owner, labelsPath, outPath, mode] = process.argv.slice(2);
@@ -27,7 +29,9 @@ const body = [`select id into strict proj from public.research_projects where ti
 for (const l of doc.labels) {
   const p = l.product;
   body.push(`select id into strict pid from public.products where name = ${lit(p.name)} and package_size = ${lit(p.package_size)} and unit = ${lit(p.unit)};`);
-  body.push(`insert into public.sources (project_id, kind, title, accessed_on, notes) values (proj, 'label', ${lit(`Etiqueta: ${p.name}`)}, ${lit(doc.observed_on)}, ${lit(`${l.notes} Foto: ${l.photo}.`)}) returning id into src;`);
+  const source = l.source ?? { kind: 'label', title: `Etiqueta: ${p.name}` };
+  const notes = [l.notes, l.photo && `Foto: ${l.photo}.`].filter(Boolean).join(' ');
+  body.push(`insert into public.sources (project_id, kind, title, url, accessed_on, notes) values (proj, ${lit(source.kind)}, ${lit(source.title)}, ${lit(source.url)}, ${lit(doc.observed_on)}, ${lit(notes)}) returning id into src;`);
   if (l.values) {
     const unknown = Object.keys(l.values).filter((k) => !NUTRIENTS.includes(k));
     if (unknown.length) fail(`${p.name}: no column for ${unknown.join(', ')}`);

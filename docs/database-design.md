@@ -111,6 +111,7 @@ Las fotos van a `research/<tema>/labels/` y su transcripción, confirmada por el
 - Los valores se guardan por la porción que declara la etiqueta (`basis_quantity`), sin conversiones.
 - Un valor declarado como "< x" se guarda como x, con nota en la fuente. Los totales de las recetas quedan como máximo, nunca por debajo del real.
 - Si la etiqueta declara sal y no sodio, el sodio se deriva como sal ÷ 2,5 (definición del Reglamento UE 1169/2011), con nota en la fuente.
+- Si la etiqueta no tiene tabla nutricional (por ejemplo, especias "100 % canela"), se usan valores de una base de referencia oficial, como USDA FoodData Central. La entrada lleva `source` con `kind = 'bibliographic'`, título y URL, y una nota que dice "referencia, no etiqueta". La foto de la etiqueta sin tabla se guarda igual. Ejemplo: `raw-data/nutrition-references_2026-11-27.json`.
 
 ## Atajos conocidos
 
