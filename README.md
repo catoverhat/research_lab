@@ -1,6 +1,6 @@
-# Food Research Lab
+# Research Lab
 
-Plataforma para investigar y optimizar recetas: precio, calidad, sabor, nutrición y mejora continua. El primer caso es el chocolate caliente estilo español.
+Plataforma para investigar y decidir con evidencia: optimizar recetas (precio, calidad, sabor, nutrición) y, en el futuro, comparar productos antes de comprarlos. El primer caso es el chocolate caliente estilo español. Módulos: [docs/architecture.md](docs/architecture.md).
 
 ## Requisitos
 

@@ -19,7 +19,7 @@ No hacen falta pgvector ni RAG: los datos son estructurados y SQL los compara co
 
 | Entorno | Qué es | Cómo se toca |
 |---------|--------|--------------|
-| Local | Stack de Supabase en Docker (`project_id = food_research_lab`) | `pnpm supabase:*` (local es el destino por defecto del CLI v3) |
+| Local | Stack de Supabase en Docker (`project_id = research_lab`) | `pnpm supabase:*` (local es el destino por defecto del CLI v3) |
 | Hosted | Proyecto propio de Supabase, plan Free | `--remote`, siempre después de un dry-run y con aprobación |
 
 Auth tiene la misma configuración que shots-bar: signup, inicio de sesión anónimo, vinculación manual de cuentas y rotación de refresh tokens activados. Captcha Turnstile (`SUPABASE_AUTH_CAPTCHA_SECRET`). Sin confirmación de email.

@@ -2,7 +2,7 @@
 
 ## Proyecto
 
-Food Research Lab es una plataforma de investigación gastronómica: productos, precios, formulaciones, experimentos, evaluación sensorial, nutrición y hallazgos. El primer caso es el chocolate caliente estilo español. Supabase es la fuente central de datos.
+Research Lab es una plataforma para investigar y decidir con evidencia: productos, precios, fuentes, hipótesis, experimentos y hallazgos, con un módulo por tipo de investigación (alimentos ahora; compras en el futuro, ver [docs/architecture.md](docs/architecture.md)). El primer caso es el chocolate caliente estilo español. Supabase es la fuente central de datos.
 
 Lee antes de trabajar:
 - [docs/requirements.md](docs/requirements.md)
@@ -54,7 +54,7 @@ Antes de cambiar algo de Supabase, consulta la documentación oficial: https://s
 
 - `pnpm supabase:db:reset:local` puede terminar con `Error status 502` **después** de `Restarting containers...`. Eso es la salud de Storage o Kong al reiniciar, no la migración. Si las migraciones aparecen como `Applying migration ...` sin error, la base está bien.
 - Si después la API sigue en 502: `pnpm supabase:stop`, luego `pnpm supabase:start`.
-- El contenedor `vector` (logs) entra en bucle de reinicios porque no alcanza el daemon de Docker. Si bloquea `supabase start` por conflicto de nombre, elimina solo ese contenedor: `docker rm -f supabase_vector_food_research_lab`.
+- El contenedor `vector` (logs) entra en bucle de reinicios porque no alcanza el daemon de Docker. Si bloquea `supabase start` por conflicto de nombre, elimina solo ese contenedor: `docker rm -f supabase_vector_research_lab`.
 
 ## Anti-pausa (plan Free)
 

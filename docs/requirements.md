@@ -1,6 +1,6 @@
 # Requisitos
 
-Plataforma de investigación gastronómica. El primer caso es la optimización del chocolate caliente estilo español.
+Plataforma de investigación para decidir con evidencia, con un núcleo común y un módulo por tipo de investigación (ver [architecture.md](architecture.md)). El primer caso, del módulo de alimentos, es la optimización del chocolate caliente estilo español.
 
 ## Funcionales
 
