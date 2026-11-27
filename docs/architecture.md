@@ -10,7 +10,7 @@ flowchart LR
 ```
 
 - **Supabase es la fuente central.** Guarda los datos estructurados, las fotos y etiquetas (Storage) y los usuarios (Auth). Los cálculos viven en vistas SQL.
-- **Next.js (fase 3 en adelante, última versión estable).** Usará el stack de shots-bar: App Router, TypeScript, Tailwind, shadcn/ui, React Hook Form + Zod y Recharts. Tipos generados en `src/shared/database/database.types.ts`.
+- **Next.js (fase 3 en adelante, última versión estable).** App Router, TypeScript y Tailwind. Los formularios son nativos con Server Actions, y Zod valida en el servidor. shadcn/ui y React Hook Form se añaden cuando un componente los necesite (diálogos, combobox), y Recharts en la fase 4. Tipos generados en `src/shared/database/database.types.ts`.
 - **IA (fase 5).** Se empieza por lo más simple: exportar el JSON de `v_research_context` y adjuntarlo a la conversación. Después, si hace falta, el servidor MCP oficial de Supabase en modo solo lectura y limitado al proyecto: `https://mcp.supabase.com/mcp?project_ref=<ref>&read_only=true&features=database`.
 
 No hacen falta pgvector ni RAG: los datos son estructurados y SQL los compara con precisión.
@@ -22,7 +22,23 @@ No hacen falta pgvector ni RAG: los datos son estructurados y SQL los compara co
 | Local | Stack de Supabase en Docker (`project_id = research_lab`) | `pnpm supabase:*` (local es el destino por defecto del CLI v3) |
 | Hosted | Proyecto propio de Supabase, plan Free | `--remote`, siempre después de un dry-run y con aprobación |
 
-Auth tiene la misma configuración que shots-bar: signup, inicio de sesión anónimo, vinculación manual de cuentas y rotación de refresh tokens activados. Captcha Turnstile (`SUPABASE_AUTH_CAPTCHA_SECRET`). Sin confirmación de email.
+Auth (herramienta personal): solo login, con email y contraseña o con passkey. El registro y el inicio de sesión anónimo están desactivados, y las cuentas se crean desde el dashboard. Las passkeys son las nativas de Supabase Auth (beta, `signInWithPasskey` y `registerPasskey`), sin código WebAuthn propio. Captcha Turnstile (`SUPABASE_AUTH_CAPTCHA_SECRET`). Rotación de refresh tokens activada. Sin confirmación de email.
+
+## Frontend
+
+```
+src/
+  app/          rutas finas: leen datos y componen secciones
+  core/         núcleo común: auth, projects, products (con precios)
+  modules/food/ módulo de alimentos: formulations, experiments
+  shared/       clientes de Supabase, helpers de formularios, formato y UI base
+  proxy.ts      refresca la sesión y redirige a /login
+```
+
+- Cada página y cada Server Action llama a `requireUser()`. El proxy no basta como control, y el RLS hace el resto.
+- Los datos van por Server Actions con el cliente del usuario, así que nunca se usa la clave secreta. Solo las passkeys usan el cliente del navegador, porque necesitan `navigator.credentials`.
+- Un campo vacío se guarda como `null`, nunca como `""` ni `0` (`src/shared/forms.ts`).
+- Los precios solo tienen acción de añadir. Una receta con experimentos realizados muestra la composición congelada y ofrece "Crear versión nueva", que copia la receta y sus ingredientes a `version + 1`.
 
 ## Módulos
 

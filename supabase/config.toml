@@ -147,9 +147,10 @@ max_indexes = 5
 enabled = true
 # The base URL of your website. Used as an allow-list for redirects and for constructing URLs used
 # in emails.
-site_url = "http://127.0.0.1:3000"
+# localhost, not 127.0.0.1: a WebAuthn relying party ID cannot be an IP address.
+site_url = "http://localhost:3000"
 # A list of *exact* URLs that auth providers are permitted to redirect to post authentication.
-additional_redirect_urls = ["https://127.0.0.1:3000"]
+additional_redirect_urls = ["http://localhost:3000"]
 # How long tokens are valid for, in seconds. Defaults to 3600 (1 hour), maximum 604,800 (1 week).
 jwt_expiry = 3600
 # JWT issuer URL. If not set, defaults to the local API URL (http://127.0.0.1:<port>/auth/v1).
@@ -161,10 +162,10 @@ enable_refresh_token_rotation = true
 # Allows refresh tokens to be reused after expiry, up to the specified interval in seconds.
 # Requires enable_refresh_token_rotation = true.
 refresh_token_reuse_interval = 10
-# Allow/disallow new user signups to your project.
-enable_signup = true
+# Personal tool: login only. Accounts are created from the dashboard (or the admin API locally).
+enable_signup = false
 # Allow/disallow anonymous sign-ins to your project.
-enable_anonymous_sign_ins = true
+enable_anonymous_sign_ins = false
 # Allow/disallow testing manual linking of accounts
 enable_manual_linking = true
 # Passwords shorter than this value will be rejected as weak. Minimum 6, recommended 8 or more.
@@ -289,6 +290,15 @@ verify_enabled = false
 otp_length = 6
 template = "Your code is {{ .Code }}"
 max_frequency = "5s"
+
+# Passkey sign-in (first factor). Hosted: Authentication -> Passkeys, with the production domain.
+[auth.passkey]
+enabled = true
+
+[auth.webauthn]
+rp_display_name = "Research Lab"
+rp_id = "localhost"
+rp_origins = ["http://localhost:3000"]
 
 # Configure MFA via WebAuthn
 # [auth.mfa.web_authn]

@@ -12,7 +12,14 @@ Lee antes de trabajar:
 
 ## Alcance actual
 
-Fase 1: base de datos. **No** construyas frontend ni integración con IA hasta que el plan lo indique. No añadas dependencias que la fase actual no necesite.
+Fase 3: frontend Next.js (auth y CRUD), ya hecho en local y pendiente de publicar. **No** construyas dashboard (fase 4) ni integración con IA (fase 5) hasta que el plan lo indique. No añadas dependencias que la fase actual no necesite.
+
+## Frontend
+
+- Estructura en [docs/architecture.md](docs/architecture.md#frontend): `core/` (núcleo común), `modules/<tipo>/` (alimentos) y `shared/`. Nada específico del chocolate en el código.
+- Antes de usar una API de Next.js, lee su guía en `node_modules/next/dist/docs/`: esta versión cambia APIs y convenciones (`proxy.ts` en vez de `middleware.ts`, `refresh()`, TypeScript 7 con el CLI).
+- Cada página y cada Server Action empieza con `requireUser()`. Valida con Zod en el servidor (`src/shared/forms.ts`). No uses la clave secreta en la app.
+- Local: la app va en `http://localhost:3000`, no en `127.0.0.1`, porque las passkeys no aceptan una IP como RP ID. Tras cambiar el código: `pnpm typecheck`, `pnpm test` y `pnpm build`.
 
 Versiones: usa siempre la última versión estable de cada herramienta y dependencia (Next.js, Supabase CLI, TypeScript, pnpm…). Antes de subir una versión mayor, lee su guía oficial de migración.
 

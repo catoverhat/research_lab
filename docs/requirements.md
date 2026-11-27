@@ -19,7 +19,7 @@ Plataforma de investigación para decidir con evidencia, con un núcleo común y
 | RF-11 | Costes por gramo/ml, por lote, por ración y por experimento, con el precio del día | vistas `v_*_cost`, `v_experiment_summary` |
 | RF-12 | Comparaciones sensoriales y nutricionales entre formulaciones | `v_sensory_comparison`, `v_formulation_nutrition` |
 | RF-13 | Exportar todo el contexto de un proyecto en JSON para una IA | `v_research_context` |
-| RF-14 | Dashboard, CRUD, gráficas e informes PDF | Fases 3–6 (pendiente) |
+| RF-14 | Dashboard, CRUD, gráficas e informes PDF | CRUD: fase 3 (`src/`). Dashboard, gráficas y PDF: fases 4–6 (pendiente) |
 
 ## No funcionales
 
