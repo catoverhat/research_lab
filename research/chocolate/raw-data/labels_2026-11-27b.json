@@ -1,0 +1,25 @@
+{
+  "observed_on": "2026-11-27",
+  "project": "Optimización experimental del chocolate a la taza",
+  "method": "Transcripción de la foto de etiqueta enviada por el usuario y confirmada por él. Los valores que la etiqueta no declara se completan con una referencia oficial, indicada en la nota.",
+  "labels": [
+    {
+      "product": { "name": "Cocoa Amarga Líder", "package_size": 200, "unit": "g" },
+      "photo": "research/chocolate/labels/2026-11-27_cocoa-amarga-lider-200g.png",
+      "barcode": "7460193553296",
+      "basis_quantity": 100,
+      "values": {
+        "energy_kcal": 228,
+        "fat_g": 14,
+        "saturated_fat_g": 8.07,
+        "carbohydrates_g": 58,
+        "sugars_g": 1.75,
+        "fiber_g": 33,
+        "protein_g": 20,
+        "sodium_mg": 21
+      },
+      "notes": "Por 100 g; la etiqueta también da la columna de 200 g (el envase completo). Referencia: azúcares 1,75 g y grasa saturada 8,07 g de USDA FDC 169593 'Cocoa, dry powder, unsweetened' (https://fdc.nal.usda.gov/food-details/169593/nutrients); la etiqueta no los declara. Observación: los valores de la etiqueta coinciden con USDA 169593 redondeados (salvo fibra: 33 g frente a 37 g), lo que sugiere cocoa natural y no alcalinizada; no es prueba. Ingredientes: 100% cocoa amarga. Alérgenos: no contiene. Origen: Panamá (PanaPack S.A., planta 1157-AD), fabricada para Centro Cuesta Nacional.",
+      "product_note": "Confirmado por el usuario: envase de 200 g (foto de etiqueta del 2026-11-27)."
+    }
+  ]
+}

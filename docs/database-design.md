@@ -112,6 +112,23 @@ Las fotos van a `research/<tema>/labels/` y su transcripción, confirmada por el
 - Un valor declarado como "< x" se guarda como x, con nota en la fuente. Los totales de las recetas quedan como máximo, nunca por debajo del real.
 - Si la etiqueta declara sal y no sodio, el sodio se deriva como sal ÷ 2,5 (definición del Reglamento UE 1169/2011), con nota en la fuente.
 - Si la etiqueta no tiene tabla nutricional (por ejemplo, especias "100 % canela"), se usan valores de una base de referencia oficial, como USDA FoodData Central. La entrada lleva `source` con `kind = 'bibliographic'`, título y URL, y una nota que dice "referencia, no etiqueta". La foto de la etiqueta sin tabla se guarda igual. Ejemplo: `raw-data/nutrition-references_2026-11-27.json`.
+- Si la tabla está incompleta, los valores que faltan se completan de la misma referencia, y la nota dice cuáles son de referencia. Ejemplo: `raw-data/labels_2026-11-27b.json`.
+
+### Notas de excepción
+
+Las notas (`notes` de productos, precios, recetas, ingredientes y fuentes) registran todo lo que no siguió el proceso normal. Con el tiempo muestran patrones: qué productos no traen tabla, qué datos hubo que derivar, qué confirma siempre el usuario. Para poder buscarlas y contarlas, cada excepción empieza con una de estas etiquetas:
+
+| Etiqueta | Cuándo |
+|---|---|
+| `Referencia:` | El valor viene de una base de referencia, no de la etiqueta. Indica la base, el id y la URL |
+| `Derivado:` | Se calculó a partir de otro dato. Indica la fórmula (por ejemplo, sodio = sal ÷ 2,5) |
+| `Máximo:` | La etiqueta declara "< x" y se guarda x |
+| `Confirmado por el usuario:` | Lo aportó o corrigió el usuario |
+| `No importado:` | Había un dato y no se guardó. Indica por qué |
+| `Observación:` | Algo que se notó y no es un dato (una coincidencia o una sospecha) |
+| `Pendiente:` | Falta verificarlo |
+
+Las notas anteriores al 2026-11-27 no siguen todas este formato.
 
 ## Atajos conocidos
 

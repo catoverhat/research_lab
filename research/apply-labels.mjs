@@ -44,6 +44,7 @@ for (const l of doc.labels) {
     );
   }
   if (l.product_note) body.push(`update public.products set notes = concat_ws(' ', notes, ${lit(l.product_note)}) where id = pid;`);
+  if (l.barcode) body.push(`update public.products set barcode = ${lit(l.barcode)} where id = pid;`);
 }
 
 const report = 'recetas con energía: %/%, con azúcares: %/%';
