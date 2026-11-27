@@ -1,0 +1,48 @@
+{
+  "observed_on": "2026-11-27",
+  "project": "Optimización experimental del chocolate a la taza",
+  "method": "Transcripción de fotos de etiquetas enviadas por el usuario y confirmada por él. Los valores son los de la etiqueta, por la porción que declara.",
+  "labels": [
+    {
+      "product": { "name": "Maicena Duryea", "package_size": 425, "unit": "g" },
+      "photo": "research/chocolate/labels/2026-11-27_maizena-duryea-425g.jpg",
+      "basis_quantity": 10,
+      "values": {
+        "energy_kcal": 34,
+        "fat_g": 0,
+        "saturated_fat_g": 0,
+        "carbohydrates_g": 8.6,
+        "sugars_g": 0,
+        "fiber_g": 0,
+        "protein_g": 0,
+        "sodium_mg": 3
+      },
+      "notes": "Porción: 1 cucharada (10 g) de polvo; 42,5 porciones por envase. No se usa la columna de natilla preparada.",
+      "product_note": "Foto de etiqueta del 2026-11-27: Maizena Duryea 425 g, ingrediente fécula de maíz, hecho en México (Unilever)."
+    },
+    {
+      "product": { "name": "Valorcao a la Taza 0% azúcares añadidos", "package_size": 200, "unit": "g" },
+      "photo": "research/chocolate/labels/2026-11-27_valorcao-0-azucares-200g.jpg",
+      "basis_quantity": 100,
+      "values": {
+        "energy_kcal": 276,
+        "fat_g": 2.6,
+        "saturated_fat_g": 1.5,
+        "carbohydrates_g": 80,
+        "sugars_g": 0.5,
+        "protein_g": 5.6,
+        "sodium_mg": 4
+      },
+      "notes": "Por 100 g. Azúcares declarados \"<0,5 g\": se guarda 0,5 como máximo (recomendación aceptada por el usuario el 2026-11-27). Sodio 4 mg derivado de sal 0,01 g (sodio = sal / 2,5, Reglamento UE 1169/2011). Fibra no declarada. Ingredientes parcialmente legibles: maltitol, cacao desgrasado en polvo (20 %), espesante, lecitina.",
+      "product_note": "Etiqueta cotejada con foto del 2026-11-27 (ver fuente 'Etiqueta: Valorcao a la Taza 0% azúcares añadidos')."
+    },
+    {
+      "product": { "name": "Canela molida Líder", "package_size": 80, "unit": "g" },
+      "photo": "research/chocolate/labels/2026-11-27_canela-molida-lider-80g.jpg",
+      "basis_quantity": null,
+      "values": null,
+      "notes": "La etiqueta no tiene tabla nutricional. Ingredientes: 100% canela.",
+      "product_note": "Etiqueta sin tabla nutricional (foto del 2026-11-27). Reg. Ind. 20032, Reg. Sanit. 52797."
+    }
+  ]
+}

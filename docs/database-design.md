@@ -100,10 +100,17 @@ Decisiones de mapeo, revisadas con el usuario el 2026-11-26. Están como constan
 - Una presentación por producto: Munné 5 oz y 16 oz son dos productos.
 - Porción explícita: cada receta es 1 ración de 250 ml (`servings`, `serving_size`, `serving_unit`).
 - Cantidades confirmadas por el usuario: F03 usa 8 g de maicena; la leche es siempre Parmalat semidescremada de 1000 ml.
-- Sin dato fiable, `null` y nota en el producto: la nutrición de Embajador (porción no confirmada), los límites superiores ("≤ 0.5 g") y la fibra dudosa de Munné.
+- Sin dato fiable, `null` y nota en el producto: la nutrición de Embajador (porción no confirmada) y la fibra dudosa de Munné.
 - Evidencia: lo observado o derivado es `preliminary`, y lo que la exportación declara no controlado es `anecdotal`. Nada es `confirmed`.
 - Lo que no tiene tabla (metodología, seguridad, limitaciones y la lista de lo no importado) va en `research_reports` versión 1.
 - No se importan: el experimento sin receta E06 (su observación va en un hallazgo), la leche entera Líder y las fotos, que no están disponibles.
+
+### Etiquetas nutricionales
+
+Las fotos van a `research/<tema>/labels/` y su transcripción, confirmada por el usuario, a `raw-data/labels_<fecha>.json`. `research/apply-labels.mjs` la aplica igual que la importación: una sola sentencia, como el dueño y con `--dry-run`. Cada etiqueta crea una fuente `label` y sustituye la ficha nutricional entera del producto.
+- Los valores se guardan por la porción que declara la etiqueta (`basis_quantity`), sin conversiones.
+- Un valor declarado como "< x" se guarda como x, con nota en la fuente. Los totales de las recetas quedan como máximo, nunca por debajo del real.
+- Si la etiqueta declara sal y no sodio, el sodio se deriva como sal ÷ 2,5 (definición del Reglamento UE 1169/2011), con nota en la fuente.
 
 ## Atajos conocidos
 
