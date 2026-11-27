@@ -31,6 +31,7 @@ export function Passkeys() {
 
   return (
     <div className="space-y-3">
+      {passkeys === undefined && !error && <p className="muted">Cargando…</p>}
       {passkeys?.length === 0 && <p className="muted">Aún no tienes passkeys.</p>}
       {passkeys && passkeys.length > 0 && (
         <table>
@@ -52,8 +53,9 @@ export function Passkeys() {
                   <button
                     className="btn btn-danger"
                     disabled={pending}
+                    aria-label={`Borrar ${p.friendly_name || "passkey"} (creada ${when(p.created_at)})`}
                     onClick={() =>
-                      window.confirm("¿Borrar esta passkey?") &&
+                      window.confirm(`¿Borrar ${p.friendly_name || "la passkey"} creada el ${when(p.created_at)}?`) &&
                       run(() => createClient().auth.passkey.delete({ passkeyId: p.id }))
                     }
                   >

@@ -17,6 +17,12 @@ export const label = (labels: Record<string, string>, value: string | null) =>
 // Prices and experiments are recorded in the Dominican Republic: "today" is the local day there.
 export const today = () => new Date().toLocaleDateString("en-CA", { timeZone: "America/Santo_Domingo" });
 
+/** The stored unit as shown: g, ml or "ud." (the database says "unit"). */
+export const unitLabel = (unit: string | null | undefined) => (unit === "unit" ? "ud." : (unit ?? dash));
+
 /** "Munné Chocolate 453.6 g" */
 export const productLabel = (p: { brand: string | null; name: string; package_size: number; unit: string }) =>
-  [p.brand, p.name, `${num(p.package_size, 1)} ${p.unit}`].filter(Boolean).join(" ");
+  [p.brand, p.name, `${num(p.package_size, 1)} ${unitLabel(p.unit)}`].filter(Boolean).join(" ");
+
+/** "falta 1 precio" / "faltan 3 precios" */
+export const missing = (n: number, noun: string) => (n === 1 ? `falta 1 ${noun}` : `faltan ${n} ${noun}s`);

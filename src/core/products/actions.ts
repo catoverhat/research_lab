@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { productLabel } from "@/shared/format";
 import { dbError, type FormState, parseForm } from "@/shared/forms";
 import { type Client, requireUser } from "@/shared/supabase/server";
-import { priceSchema, productSchema } from "./schema";
+import { priceSchema, productInUse, productSchema } from "./schema";
 
 /** Id of the ingredient or supplier with that name, creating it if needed. Names are unique per owner. */
 async function idForName(supabase: Client, table: "ingredients" | "suppliers", name: string | null) {
@@ -42,6 +42,21 @@ export async function updateProduct(id: string, _: FormState, formData: FormData
   if (state) return state;
 
   const { ingredient, ...product } = data;
+  const current = await supabase
+    .from("products")
+    .select("unit, package_size, product_prices(count), formulation_ingredients(count)")
+    .eq("id", id)
+    .single();
+  if (current.error) return dbError(current.error);
+  // Prices are per package and recipe quantities are in its unit: changing either rewrites history.
+  if (
+    productInUse(current.data) &&
+    (current.data.unit !== product.unit || current.data.package_size !== product.package_size)
+  )
+    return {
+      error: "Este producto ya tiene precios o está en recetas: su tamaño y unidad no cambian. Crea otro producto para esa presentación.",
+    };
+
   const ingredientId = await idForName(supabase, "ingredients", ingredient);
   if (ingredientId.error) return dbError(ingredientId.error);
 

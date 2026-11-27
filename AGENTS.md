@@ -14,6 +14,8 @@ Lee antes de trabajar:
 
 Fase 3: frontend Next.js (auth y CRUD), ya hecho en local y pendiente de publicar. **No** construyas dashboard (fase 4) ni integración con IA (fase 5) hasta que el plan lo indique. No añadas dependencias que la fase actual no necesite.
 
+Versiones: usa siempre la última versión estable de cada herramienta y dependencia (Next.js, Supabase CLI, TypeScript, pnpm…). Antes de subir una versión mayor, lee su guía oficial de migración.
+
 ## Frontend
 
 - Estructura en [docs/architecture.md](docs/architecture.md#frontend): `core/` (núcleo común), `modules/<tipo>/` (alimentos) y `shared/`. Nada específico del chocolate en el código.
@@ -22,14 +24,14 @@ Fase 3: frontend Next.js (auth y CRUD), ya hecho en local y pendiente de publica
 - Local: la app va en `http://localhost:3000`, no en `127.0.0.1`, porque las passkeys no aceptan una IP como RP ID. Tras cambiar el código: `pnpm typecheck`, `pnpm test` y `pnpm build`.
 - Antes de hacer commit de cambios en el frontend, pasa el agente `nextjs-reviewer` y, si cambian pantallas, `ui-ux-reviewer`. Usan las skills de Vercel de `.claude/skills/` (origen y licencia en `NOTICE.md`).
 
-Versiones: usa siempre la última versión estable de cada herramienta y dependencia (Next.js, Supabase CLI, TypeScript, pnpm…). Antes de subir una versión mayor, lee su guía oficial de migración.
-
 ## Reglas de datos
 
 - No inventes información experimental, precios ni valores nutricionales. Lo que no se sabe queda `null`.
 - Distingue lo comprobado (`findings.evidence_level = 'confirmed'`), lo preliminar, las hipótesis (`hypotheses`) y lo planificado (`experiments.status = 'planned'`).
 - Los precios solo se añaden. Una receta con experimentos realizados no cambia su composición (productos y cantidades): se crea `version + 1` con `parent_id`. Sus notas sí se pueden editar.
-- Las cantidades de receta van en la unidad del producto (`g`, `ml` o `unit`).
+- Un experimento realizado o fallido no vuelve a planificado ni a cancelado (confirmado por el usuario el 2026-11-27). Si se registró por error, se borra.
+- Las cantidades de receta van en la unidad del producto (`g`, `ml` o `unit`). Un producto con precios o en recetas no cambia de tamaño ni de unidad: otra presentación es otro producto.
+- Por ahora todos los precios son en DOP: las vistas suman sin separar monedas.
 
 ## Supabase: proyecto propio, mismo flujo que shots-bar
 

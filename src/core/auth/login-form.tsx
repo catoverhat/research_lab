@@ -59,6 +59,13 @@ export function LoginForm({ siteKey }: { siteKey: string }) {
     router.refresh();
   }
 
+  if (!siteKey)
+    return (
+      <p role="alert" className="card text-sm text-red-700">
+        Falta configurar NEXT_PUBLIC_TURNSTILE_SITE_KEY: sin ella no se puede iniciar sesión.
+      </p>
+    );
+
   return (
     <div className="card">
       <Script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" onReady={renderWidget} />

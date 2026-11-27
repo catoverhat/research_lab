@@ -134,6 +134,14 @@ Las notas anteriores se normalizaron con `research/chocolate/fixes/2026-11-27_no
 
 Una corrección de datos (no de esquema) va en `research/<tema>/fixes/<fecha>_<nombre>.sql`, como cuerpo PL/pgSQL, y se ejecuta con `research/run-as-owner.mjs <owner-uuid> <body.sql> <out.sql> [--dry-run]`. Igual que la importación, es una sola sentencia que entra como el dueño. Cada `update` localiza la fila por su clave natural y por su valor actual, y comprueba cuántas filas tocó (`get diagnostics n = row_count`). Si algo no coincide, no se guarda nada.
 
+## Reglas que hoy aplica la app, no la base
+
+Las Server Actions las comprueban, pero un script o una consulta directa se las salta. Si se usan otras vías de escritura, hay que pasarlas a triggers.
+
+- Un experimento `completed` o `failed` no vuelve a `planned` ni a `cancelled`, porque eso descongelaría su receta (`src/modules/food/experiments/actions.ts`).
+- Un producto con precios o en recetas no cambia `package_size` ni `unit`, porque reescribiría el coste histórico y el sentido de las cantidades (`src/core/products/actions.ts`).
+- El formulario de precios no pide moneda: todo queda en el `DOP` por defecto (ver el primer atajo).
+
 ## Atajos conocidos
 
 - `shortcut:` las vistas suman importes sin mirar la moneda (por defecto `DOP`). Cuando aparezca una segunda moneda, hay que agrupar por `currency`.

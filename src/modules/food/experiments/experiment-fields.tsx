@@ -1,7 +1,7 @@
 import type { Tables } from "@/shared/database/database.types";
 import { Field } from "@/shared/ui/form";
 import { Options } from "@/shared/ui/options";
-import { experimentStatus } from "./schema";
+import { experimentStatus, isRecorded, recordedStatus } from "./schema";
 
 type Formulation = { id: string; code: string; version: number; name: string | null };
 type Hypothesis = { id: string; statement: string };
@@ -45,7 +45,7 @@ export function ExperimentFields({
       </Field>
       <Field label="Estado" name="status">
         <select name="status" defaultValue={experiment?.status ?? "planned"}>
-          <Options labels={experimentStatus} />
+          <Options labels={experiment && isRecorded(experiment.status) ? recordedStatus : experimentStatus} />
         </select>
       </Field>
       <Field label="Fecha de realización" name="performed_on">

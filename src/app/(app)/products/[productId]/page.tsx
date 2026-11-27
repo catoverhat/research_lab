@@ -2,9 +2,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { addPrice, deleteProduct, updateProduct } from "@/core/products/actions";
 import { ProductFields } from "@/core/products/product-fields";
-import { dash, money, productLabel, text, today } from "@/shared/format";
+import { productInUse } from "@/core/products/schema";
+import { dash, money, productLabel, text, today, unitLabel } from "@/shared/format";
 import { must, requireUser } from "@/shared/supabase/server";
 import { ActionForm, Field, SubmitButton } from "@/shared/ui/form";
+
+export const metadata = { title: "Producto" };
 
 const stock = (value: boolean | null) => (value == null ? dash : value ? "Sí" : "No");
 
@@ -12,13 +15,18 @@ export default async function ProductPage({ params }: { params: Promise<{ produc
   const { productId } = await params;
   const supabase = await requireUser();
   const [product, history, extras, ingredients, suppliers] = await Promise.all([
-    supabase.from("products").select("*, ingredients(name)").eq("id", productId).maybeSingle(),
+    supabase
+      .from("products")
+      .select("*, ingredients(name), product_prices(count), formulation_ingredients(count)")
+      .eq("id", productId)
+      .maybeSingle(),
     supabase
       .from("v_price_history")
       .select("price_id, price, currency, observed_on, supplier, in_stock, unit_cost")
       .eq("product_id", productId)
       .order("observed_on", { ascending: false })
-      .order("created_at", { ascending: false }),
+      .order("created_at", { ascending: false })
+      .order("price_id"),
     // The view has no notes or source; fetch them per price.
     supabase.from("product_prices").select("id, notes, sources(url)").eq("product_id", productId),
     supabase.from("ingredients").select("name").order("name"),
@@ -42,12 +50,13 @@ export default async function ProductPage({ params }: { params: Promise<{ produc
         {prices.length === 0 ? (
           <p className="muted">Sin precios registrados.</p>
         ) : (
+          <div className="table-scroll">
           <table>
             <thead>
               <tr>
                 <th>Fecha</th>
                 <th>Precio</th>
-                <th>Por {p.unit}</th>
+                <th>Por {unitLabel(p.unit)}</th>
                 <th>Proveedor</th>
                 <th>Disponible</th>
                 <th>Notas</th>
@@ -55,7 +64,7 @@ export default async function ProductPage({ params }: { params: Promise<{ produc
             </thead>
             <tbody>
               {prices.map((h) => {
-                const extra = extrasById.get(h.price_id!);
+                const extra = h.price_id ? extrasById.get(h.price_id) : undefined;
                 const url = extra?.sources?.url;
                 return (
                   <tr key={h.price_id}>
@@ -78,21 +87,19 @@ export default async function ProductPage({ params }: { params: Promise<{ produc
               })}
             </tbody>
           </table>
+          </div>
         )}
-        <h3 className="font-medium">Añadir precio</h3>
+        <h3>Añadir precio</h3>
         <p className="muted">Los precios no se editan: cada observación es una fila nueva.</p>
         <ActionForm action={addPrice.bind(null, p.id)} className="form-grid" resetOnSuccess>
-          <Field label="Precio" name="price">
+          <Field label="Precio (RD$)" name="price">
             <input name="price" type="number" step="0.01" min="0" required />
-          </Field>
-          <Field label="Moneda" name="currency">
-            <input name="currency" required defaultValue={latest?.currency ?? "DOP"} maxLength={3} />
           </Field>
           <Field label="Fecha" name="observed_on">
             <input name="observed_on" type="date" required defaultValue={today()} />
           </Field>
           <Field label="Proveedor" name="supplier">
-            <input name="supplier" list="supplier-names" defaultValue={latest?.supplier ?? ""} />
+            <input name="supplier" list="supplier-names" autoComplete="off" defaultValue={latest?.supplier ?? ""} />
             <datalist id="supplier-names">
               {must(suppliers).map((s) => (
                 <option key={s.name} value={s.name} />
@@ -125,6 +132,7 @@ export default async function ProductPage({ params }: { params: Promise<{ produc
             product={p}
             ingredient={p.ingredients?.name}
             ingredientNames={must(ingredients).map((i) => i.name)}
+            locked={productInUse(p)}
           />
           <div>
             <SubmitButton>Guardar</SubmitButton>
@@ -132,6 +140,7 @@ export default async function ProductPage({ params }: { params: Promise<{ produc
         </ActionForm>
         <ActionForm
           action={deleteProduct.bind(null, p.id)}
+          className="danger-zone"
           confirm="¿Borrar este producto? Se borrarán también su historial de precios y su ficha nutricional."
         >
           <SubmitButton className="btn btn-danger">Borrar producto</SubmitButton>

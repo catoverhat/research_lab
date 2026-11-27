@@ -1,10 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { units } from "@/core/products/schema";
-import { label, num, productLabel, text } from "@/shared/format";
+import { label, num, productLabel, unitLabel } from "@/shared/format";
 import { must, requireUser } from "@/shared/supabase/server";
 import { ActionForm, Field, SubmitButton } from "@/shared/ui/form";
-import { experimentStatus } from "@/modules/food/experiments/schema";
+import { experimentStatus, isRecorded } from "@/modules/food/experiments/schema";
 import {
   addIngredient,
   createVersion,
@@ -27,6 +26,8 @@ const nutrients = [
   ["protein_g", "Proteína", "g"],
   ["sodium_mg", "Sodio", "mg"],
 ] as const;
+
+export const metadata = { title: "Receta" };
 
 export default async function FormulationPage({
   params,
@@ -56,7 +57,7 @@ export default async function FormulationPage({
   ]);
   const runs = must(experiments);
   // Same rule as the database trigger: completed or failed runs freeze the composition.
-  const frozen = runs.some((e) => e.status === "completed" || e.status === "failed");
+  const frozen = runs.some((e) => isRecorded(e.status));
   const c = must(cost);
   const n = must(nutrition);
 
@@ -72,7 +73,7 @@ export default async function FormulationPage({
         ))}
       </p>
       <h1>
-        {f.code} v{f.version} {f.name && `· ${f.name}`}{" "}
+        {f.code} v{f.version} {f.name ? `· ${f.name}` : null}{" "}
         <span className="badge align-middle">{label(formulationStatus, f.status)}</span>
       </h1>
 
@@ -86,47 +87,52 @@ export default async function FormulationPage({
             </ActionForm>
           </div>
         )}
-        <table>
-          <thead>
-            <tr>
-              <th>Producto</th>
-              <th className="w-32">Cantidad</th>
-              <th>Notas</th>
-              <th />
-            </tr>
-          </thead>
-          <tbody>
-            {must(ingredients).map((i) => (
-              <tr key={i.id}>
-                <td>{i.products && productLabel(i.products)}</td>
-                <td colSpan={3}>
-                  <ActionForm action={updateIngredient.bind(null, i.id)} className="flex items-start gap-2">
-                    <div className="flex w-32 shrink-0 items-center gap-1">
-                      <input
-                        name="quantity"
-                        type="number"
-                        step="any"
-                        min="0"
-                        required
-                        aria-label="Cantidad"
-                        defaultValue={i.quantity}
-                        readOnly={frozen}
-                      />
-                      <span className="muted">{i.products?.unit}</span>
-                    </div>
-                    <textarea name="notes" rows={1} aria-label="Notas" defaultValue={i.notes ?? ""} />
-                    <SubmitButton className="btn btn-secondary">Guardar</SubmitButton>
-                  </ActionForm>
-                  {!frozen && (
-                    <ActionForm action={removeIngredient.bind(null, i.id)} confirm="¿Quitar este ingrediente?">
-                      <SubmitButton className="btn btn-danger mt-1">Quitar</SubmitButton>
-                    </ActionForm>
-                  )}
-                </td>
+        <div className="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th className="w-32">Cantidad</th>
+                <th>Notas</th>
+                <th />
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {must(ingredients).map((i) => {
+                const name = i.products ? productLabel(i.products) : "";
+                return (
+                  <tr key={i.id}>
+                    <td>{name}</td>
+                    <td colSpan={3}>
+                      <ActionForm action={updateIngredient.bind(null, i.id)} className="flex items-start gap-2">
+                        <div className="flex w-32 shrink-0 items-center gap-1">
+                          <input
+                            name="quantity"
+                            type="number"
+                            step="any"
+                            min="0"
+                            required
+                            aria-label={`Cantidad de ${name}`}
+                            defaultValue={i.quantity}
+                            readOnly={frozen}
+                          />
+                          <span className="muted">{unitLabel(i.products?.unit)}</span>
+                        </div>
+                        <textarea name="notes" rows={1} aria-label={`Notas de ${name}`} defaultValue={i.notes ?? ""} />
+                        <SubmitButton className="btn btn-secondary">{frozen ? "Guardar notas" : "Guardar"}</SubmitButton>
+                      </ActionForm>
+                      {!frozen && (
+                        <ActionForm action={removeIngredient.bind(null, i.id)} confirm={`¿Quitar ${name} de la receta?`}>
+                          <SubmitButton className="btn btn-danger mt-1">Quitar</SubmitButton>
+                        </ActionForm>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
         {!frozen && (
           <ActionForm action={addIngredient.bind(null, f.id)} className="form-grid" resetOnSuccess>
             <Field label="Producto" name="product_id">
@@ -141,7 +147,7 @@ export default async function FormulationPage({
                 ))}
               </select>
             </Field>
-            <Field label="Cantidad" name="quantity" hint="En la unidad del producto (g, ml o unidad).">
+            <Field label="Cantidad" name="quantity" hint="En la unidad del producto (g, ml o ud.).">
               <input name="quantity" type="number" step="any" min="0" required />
             </Field>
             <Field label="Notas" name="notes" wide>
@@ -159,11 +165,16 @@ export default async function FormulationPage({
         <p>
           Lote a precios actuales:{" "}
           <CostCell value={c?.total_cost ?? null} missing={c?.ingredients_without_price ?? null} />
-          {c?.cost_per_serving != null && <> · por ración: <CostCell value={c.cost_per_serving} missing={null} /></>}
+          {c?.cost_per_serving != null && (
+            <>
+              {" "}
+              · por ración: <CostCell value={c.cost_per_serving} missing={c.ingredients_without_price} />
+            </>
+          )}
         </p>
         <p className="muted">
           {f.servings ? `${num(f.servings)} raciones` : "Raciones sin indicar: nutrición del lote completo"}
-          {f.serving_size && ` de ${num(f.serving_size)} ${label(units, f.serving_unit)}`}
+          {f.serving_size && ` de ${num(f.serving_size)} ${unitLabel(f.serving_unit)}`}
         </p>
         {n && (
           <>
@@ -181,8 +192,10 @@ export default async function FormulationPage({
             </table>
             {!!n.ingredients_without_nutrition && (
               <p className="warning">
-                {n.ingredients_without_nutrition} ingredientes sin ficha nutricional: los totales afectados quedan
-                vacíos.
+                {n.ingredients_without_nutrition === 1
+                  ? "1 ingrediente no tiene ficha nutricional"
+                  : `${n.ingredients_without_nutrition} ingredientes no tienen ficha nutricional`}
+                : los totales afectados quedan vacíos.
               </p>
             )}
           </>
@@ -198,7 +211,7 @@ export default async function FormulationPage({
             {runs.map((e) => (
               <li key={e.id}>
                 <Link href={`/projects/${projectId}/experiments/${e.id}`}>
-                  {text(e.performed_on)} · {label(experimentStatus, e.status)}
+                  {e.performed_on ?? "Sin fecha"} · {label(experimentStatus, e.status)}
                 </Link>
               </li>
             ))}
@@ -221,6 +234,7 @@ export default async function FormulationPage({
         )}
         <ActionForm
           action={deleteFormulation.bind(null, f.id, projectId)}
+          className="danger-zone"
           confirm="¿Borrar esta versión de la receta? Solo se puede si no tiene experimentos."
         >
           <SubmitButton className="btn btn-danger">Borrar versión</SubmitButton>

@@ -7,7 +7,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "node --test \"src/**/*.test.ts\"",
+    "test": "node --import ./test-hooks.mjs --test \"src/**/*.test.ts\"",
     "typecheck": "tsc --noEmit",
     "supabase:start": "supabase start",
     "supabase:stop": "supabase stop",

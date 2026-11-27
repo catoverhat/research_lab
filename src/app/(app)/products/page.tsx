@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { createProduct } from "@/core/products/actions";
 import { ProductFields } from "@/core/products/product-fields";
-import { dash, money, productLabel, text } from "@/shared/format";
+import { dash, money, productLabel, text, unitLabel } from "@/shared/format";
 import { must, requireUser } from "@/shared/supabase/server";
 import { ActionForm, SubmitButton } from "@/shared/ui/form";
+
+export const metadata = { title: "Productos" };
 
 export default async function ProductsPage() {
   const supabase = await requireUser();
@@ -23,8 +25,9 @@ export default async function ProductsPage() {
     <>
       <h1>Productos</h1>
       {products.length === 0 ? (
-        <p className="muted">Aún no hay productos.</p>
+        <p className="muted">Aún no hay productos. Crea el primero con «Nuevo producto».</p>
       ) : (
+        <div className="table-scroll">
         <table>
           <thead>
             <tr>
@@ -58,13 +61,14 @@ export default async function ProductsPage() {
                     )}
                   </td>
                   <td>
-                    {price ? `${money(price.unit_cost, price.currency ?? undefined, 4)} / ${p.unit}` : dash}
+                    {price ? `${money(price.unit_cost, price.currency ?? undefined, 4)} / ${unitLabel(p.unit)}` : dash}
                   </td>
                 </tr>
               );
             })}
           </tbody>
         </table>
+        </div>
       )}
       <details className="card">
         <summary>Nuevo producto</summary>

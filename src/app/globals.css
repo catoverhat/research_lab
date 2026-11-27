@@ -10,6 +10,12 @@
   h2 {
     @apply text-lg font-semibold;
   }
+  h3 {
+    @apply font-semibold;
+  }
+  :where(a, button, summary):focus-visible {
+    @apply outline-2 outline-offset-2 outline-amber-600;
+  }
   a {
     @apply text-amber-800 underline-offset-2 hover:underline;
   }
@@ -17,6 +23,10 @@
   select,
   textarea {
     @apply w-full rounded border border-stone-300 bg-white px-2 py-1.5 text-sm focus:outline-2 focus:outline-amber-600 disabled:bg-stone-100;
+  }
+  input:read-only,
+  textarea:read-only {
+    @apply bg-stone-100 text-stone-600;
   }
   table {
     @apply w-full text-sm;
@@ -59,5 +69,12 @@
   }
   .warning {
     @apply text-sm text-amber-800;
+  }
+  /* Wide tables scroll sideways on narrow screens instead of overflowing the page. */
+  .table-scroll {
+    @apply overflow-x-auto;
+  }
+  .danger-zone {
+    @apply border-t border-stone-200 pt-4;
   }
 }

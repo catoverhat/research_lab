@@ -52,6 +52,11 @@ export function ActionForm({
           {state.error}
         </p>
       )}
+      {state?.ok && (
+        <p role="status" className="text-sm text-green-800 sm:col-span-full">
+          Guardado.
+        </p>
+      )}
     </form>
   );
 }

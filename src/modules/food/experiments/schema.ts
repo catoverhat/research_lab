@@ -8,6 +8,10 @@ export const experimentStatus = {
   cancelled: "Cancelado",
 };
 
+/** Completed and failed runs are recorded history: they freeze their recipe. */
+export const recordedStatus = { completed: experimentStatus.completed, failed: experimentStatus.failed };
+export const isRecorded = (status: string) => Object.hasOwn(recordedStatus, status);
+
 const base = z.object({
   hypothesis_id: optionalId,
   status: oneOf(experimentStatus),

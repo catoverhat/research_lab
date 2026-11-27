@@ -6,6 +6,8 @@ import { label, text } from "@/shared/format";
 import { must, requireUser } from "@/shared/supabase/server";
 import { ActionForm, SubmitButton } from "@/shared/ui/form";
 
+export const metadata = { title: "Proyectos" };
+
 export default async function ProjectsPage() {
   const supabase = await requireUser();
   const projects = must(
@@ -16,8 +18,9 @@ export default async function ProjectsPage() {
     <>
       <h1>Proyectos</h1>
       {projects.length === 0 ? (
-        <p className="muted">Aún no hay proyectos.</p>
+        <p className="muted">Aún no hay proyectos. Crea el primero con «Nuevo proyecto».</p>
       ) : (
+        <div className="table-scroll">
         <table>
           <thead>
             <tr>
@@ -38,6 +41,7 @@ export default async function ProjectsPage() {
             ))}
           </tbody>
         </table>
+        </div>
       )}
       <details className="card">
         <summary>Nuevo proyecto</summary>

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { label, money, text } from "@/shared/format";
+import { label, missing as missingText, money, text } from "@/shared/format";
 import { must, type Client } from "@/shared/supabase/server";
 import { ActionForm, SubmitButton } from "@/shared/ui/form";
 import { createFormulation } from "./actions";
@@ -12,7 +12,7 @@ export function CostCell({ value, missing, batch }: { value: number | null; miss
     <>
       {money(value)}
       {batch && value != null && " por lote"}
-      {!!missing && <span className="warning"> · faltan {missing} precios</span>}
+      {!!missing && <span className="warning"> · {missingText(missing, "precio")}</span>}
     </>
   );
 }
@@ -30,50 +30,57 @@ export async function FormulationsSection({ supabase, projectId }: { supabase: C
       .select("formulation_id, cost_per_serving, total_cost, ingredients_without_price")
       .eq("project_id", projectId),
   ]);
+  const recipes = must(formulations);
   const costById = new Map(must(costs).map((c) => [c.formulation_id, c]));
 
   return (
     <section className="card">
-      <h2>Formulaciones</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Receta</th>
-            <th>Nombre</th>
-            <th>Estado</th>
-            <th>Coste por ración (precios actuales)</th>
-          </tr>
-        </thead>
-        <tbody>
-          {must(formulations).map((f) => {
-            const cost = costById.get(f.id);
-            return (
-              <tr key={f.id}>
-                <td>
-                  <Link href={`/projects/${projectId}/formulations/${f.id}`}>
-                    {f.code} v{f.version}
-                  </Link>
-                </td>
-                <td>{text(f.name)}</td>
-                <td>{label(formulationStatus, f.status)}</td>
-                <td>
-                  <CostCell
-                    value={cost?.cost_per_serving ?? cost?.total_cost ?? null}
-                    batch={cost?.cost_per_serving == null}
-                    missing={cost?.ingredients_without_price ?? null}
-                  />
-                </td>
+      <h2>Recetas</h2>
+      {recipes.length === 0 ? (
+        <p className="muted">Aún no hay recetas.</p>
+      ) : (
+        <div className="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Receta</th>
+                <th>Nombre</th>
+                <th>Estado</th>
+                <th>Coste por ración (precios actuales)</th>
               </tr>
-            );
-          })}
-        </tbody>
-      </table>
+            </thead>
+            <tbody>
+              {recipes.map((f) => {
+                const cost = costById.get(f.id);
+                return (
+                  <tr key={f.id}>
+                    <td>
+                      <Link href={`/projects/${projectId}/formulations/${f.id}`}>
+                        {f.code} v{f.version}
+                      </Link>
+                    </td>
+                    <td>{text(f.name)}</td>
+                    <td>{label(formulationStatus, f.status)}</td>
+                    <td>
+                      <CostCell
+                        value={cost?.cost_per_serving ?? cost?.total_cost ?? null}
+                        batch={cost?.cost_per_serving == null}
+                        missing={cost?.ingredients_without_price ?? null}
+                      />
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
       <details>
-        <summary>Nueva formulación</summary>
+        <summary>Nueva receta</summary>
         <ActionForm action={createFormulation.bind(null, projectId)} className="form-grid pt-3">
           <FormulationFields />
           <div>
-            <SubmitButton>Crear formulación</SubmitButton>
+            <SubmitButton>Crear receta</SubmitButton>
           </div>
         </ActionForm>
       </details>

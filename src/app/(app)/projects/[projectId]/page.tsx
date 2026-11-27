@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { updateProject } from "@/core/projects/actions";
 import { ProjectFields } from "@/core/projects/project-fields";
@@ -8,6 +9,8 @@ import { ActionForm, SubmitButton } from "@/shared/ui/form";
 import { ExperimentsSection } from "@/modules/food/experiments/experiments-section";
 import { FormulationsSection } from "@/modules/food/formulations/formulations-section";
 
+export const metadata = { title: "Proyecto" };
+
 export default async function ProjectPage({ params }: { params: Promise<{ projectId: string }> }) {
   const { projectId } = await params;
   const supabase = await requireUser();
@@ -16,6 +19,9 @@ export default async function ProjectPage({ params }: { params: Promise<{ projec
 
   return (
     <>
+      <p className="muted">
+        <Link href="/">Proyectos</Link>
+      </p>
       <div className="space-y-1">
         <h1>
           {project.title} <span className="badge align-middle">{label(projectStatus, project.status)}</span>
