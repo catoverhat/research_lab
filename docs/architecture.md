@@ -21,6 +21,9 @@ No hacen falta pgvector ni RAG: los datos son estructurados y SQL los compara co
 |---------|--------|--------------|
 | Local | Stack de Supabase en Docker (`project_id = research_lab`) | `pnpm supabase:*` (local es el destino por defecto del CLI v3) |
 | Hosted | Proyecto propio de Supabase, plan Free | `--remote`, siempre después de un dry-run y con aprobación |
+| Producción (app) | Vercel Hobby, proyecto `research-lab-catoverhat`, conectado al repo: cada push a `main` publica `https://research-lab-catoverhat.vercel.app` | Variables de producción: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `NEXT_PUBLIC_TURNSTILE_SITE_KEY` y `ENABLE_EXPERIMENTAL_COREPACK=1` (para usar el pnpm de `packageManager`). Los previews no tienen variables: no sirven para entrar |
+
+Auth en hosted (aplicado el 2026-11-27): `site_url` y redirecciones al dominio de producción, registro y login anónimo desactivados, y passkeys con RP ID `research-lab-catoverhat.vercel.app`. Cambiar ese dominio invalida las passkeys registradas.
 
 Auth (herramienta personal): solo login, con email y contraseña o con passkey. El registro y el inicio de sesión anónimo están desactivados, y las cuentas se crean desde el dashboard. Las passkeys son las nativas de Supabase Auth (beta, `signInWithPasskey` y `registerPasskey`), sin código WebAuthn propio. Captcha Turnstile (`SUPABASE_AUTH_CAPTCHA_SECRET`). Rotación de refresh tokens activada. Sin confirmación de email.
 
