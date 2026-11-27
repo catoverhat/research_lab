@@ -10,6 +10,16 @@ export const num = (value: number | null | undefined, digits = 2) =>
 
 export const text = (value: string | null | undefined) => value || dash;
 
+// A stored date ("2026-11-27") is a calendar day, so it is read and shown in UTC to keep the same day.
+const dayFormat = new Intl.DateTimeFormat("es-DO", { timeZone: "UTC", day: "2-digit", month: "2-digit", year: "numeric" });
+
+/** "2026-11-27" -> "27/11/2026"; null -> the fallback ("—" unless given); anything else as it came. */
+export const date = (value: string | null | undefined, fallback = dash) => {
+  if (!value) return fallback;
+  const day = new Date(value);
+  return Number.isNaN(day.getTime()) ? value : dayFormat.format(day);
+};
+
 /** Label for a stored code ("draft" -> "Borrador"); unknown codes show as they are. */
 export const label = (labels: Record<string, string>, value: string | null) =>
   value == null ? dash : (labels[value] ?? value);

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { label, num } from "@/shared/format";
+import { date, label, num } from "@/shared/format";
 import { must, type Client } from "@/shared/supabase/server";
 import { ActionForm, SubmitButton } from "@/shared/ui/form";
 import { CostCell } from "../formulations/formulations-section";
@@ -45,9 +45,9 @@ export async function ExperimentsSection({ supabase, projectId }: { supabase: Cl
             <tbody>
               {runs.map((e) => (
                 <tr key={e.experiment_id}>
-                  <td>
+                  <td className="whitespace-nowrap">
                     <Link href={`/projects/${projectId}/experiments/${e.experiment_id}`}>
-                      {e.performed_on ?? "Sin fecha"}
+                      {date(e.performed_on, "Sin fecha")}
                     </Link>
                   </td>
                   <td>

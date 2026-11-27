@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { addPrice, deleteProduct, updateProduct } from "@/core/products/actions";
 import { ProductFields } from "@/core/products/product-fields";
 import { productInUse } from "@/core/products/schema";
-import { dash, money, productLabel, text, today, unitLabel } from "@/shared/format";
+import { dash, date, money, productLabel, text, today, unitLabel } from "@/shared/format";
 import { must, requireUser } from "@/shared/supabase/server";
 import { ActionForm, Field, SubmitButton } from "@/shared/ui/form";
 
@@ -68,7 +68,7 @@ export default async function ProductPage({ params }: { params: Promise<{ produc
                 const url = extra?.sources?.url;
                 return (
                   <tr key={h.price_id}>
-                    <td>{h.observed_on}</td>
+                    <td className="whitespace-nowrap">{date(h.observed_on)}</td>
                     <td>{money(h.price, h.currency ?? undefined)}</td>
                     <td>{money(h.unit_cost, h.currency ?? undefined, 4)}</td>
                     <td>
@@ -100,12 +100,12 @@ export default async function ProductPage({ params }: { params: Promise<{ produc
           </Field>
           <Field label="Proveedor" name="supplier">
             <input name="supplier" list="supplier-names" autoComplete="off" defaultValue={latest?.supplier ?? ""} />
-            <datalist id="supplier-names">
-              {must(suppliers).map((s) => (
-                <option key={s.name} value={s.name} />
-              ))}
-            </datalist>
           </Field>
+          <datalist id="supplier-names">
+            {must(suppliers).map((s) => (
+              <option key={s.name} value={s.name} />
+            ))}
+          </datalist>
           <Field label="Disponible" name="in_stock">
             <select name="in_stock" defaultValue="">
               <option value="">No consta</option>

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { createProduct } from "@/core/products/actions";
 import { ProductFields } from "@/core/products/product-fields";
-import { dash, money, productLabel, text, unitLabel } from "@/shared/format";
+import { dash, date, money, productLabel, text, unitLabel } from "@/shared/format";
 import { must, requireUser } from "@/shared/supabase/server";
 import { ActionForm, SubmitButton } from "@/shared/ui/form";
 
@@ -52,7 +52,7 @@ export default async function ProductsPage() {
                         {money(price.price, price.currency ?? undefined)}
                         <span className="muted">
                           {" "}
-                          · {price.observed_on}
+                          · <span className="whitespace-nowrap">{date(price.observed_on)}</span>
                           {price.supplier && ` · ${price.supplier}`}
                         </span>
                       </>

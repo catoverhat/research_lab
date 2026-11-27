@@ -28,6 +28,9 @@
   textarea:read-only {
     @apply bg-stone-100 text-stone-600;
   }
+  [aria-invalid="true"] {
+    @apply border-red-600;
+  }
   table {
     @apply w-full text-sm;
   }

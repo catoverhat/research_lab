@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { label, num } from "@/shared/format";
+import { date, label, num } from "@/shared/format";
 import { must, requireUser } from "@/shared/supabase/server";
 import { ActionForm, SubmitButton } from "@/shared/ui/form";
 import { deleteExperiment, updateExperiment } from "@/modules/food/experiments/actions";
@@ -40,14 +40,14 @@ export default async function ExperimentPage({
         </Link>
       </p>
       <h1>
-        Experimento {e.performed_on ?? "sin fecha"}{" "}
+        Experimento {date(e.performed_on, "sin fecha")}{" "}
         <span className="badge align-middle">{label(experimentStatus, e.status)}</span>
       </h1>
 
       <section className="card">
         <p>
           {e.performed_on
-            ? `Coste del lote con los precios del ${e.performed_on}: `
+            ? `Coste del lote con los precios del ${date(e.performed_on)}: `
             : "Coste estimado del lote a precios actuales (aún sin fecha de realización): "}
           <CostCell value={s.total_cost} missing={s.ingredients_without_price} />
         </p>

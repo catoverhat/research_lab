@@ -6,6 +6,7 @@ Un término, un significado. La UI usa la columna "Término". El código y la ba
 
 | Término | En la base | Significado |
 |---|---|---|
+| Entrar / Salir | Supabase Auth | Iniciar y cerrar sesión, con contraseña o con passkey. La UI usa siempre este par |
 | Proyecto | `research_projects` | Una investigación con objetivo y alcance. Estados: planificado, activo, en pausa, terminado y archivado. Lo normal es archivarlo, no borrarlo |
 | Módulo | — | Lo propio de un tipo de investigación (alimentos ahora, compras en el futuro). El resto es el núcleo común. Ver `architecture.md` |
 | Ingrediente | `ingredients` | La materia genérica: cacao, leche, azúcar. No tiene precio ni etiqueta |

@@ -45,12 +45,12 @@ export function ProductFields({
       )}
       <Field label="Ingrediente genérico" name="ingredient" hint="Escribe uno nuevo o elige uno existente.">
         <input name="ingredient" list="ingredient-names" autoComplete="off" defaultValue={ingredient ?? ""} />
-        <datalist id="ingredient-names">
-          {ingredientNames.map((n) => (
-            <option key={n} value={n} />
-          ))}
-        </datalist>
       </Field>
+      <datalist id="ingredient-names">
+        {ingredientNames.map((n) => (
+          <option key={n} value={n} />
+        ))}
+      </datalist>
       <Field label="Código de barras" name="barcode">
         <input name="barcode" defaultValue={product?.barcode ?? ""} />
       </Field>

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { label, num, productLabel, unitLabel } from "@/shared/format";
+import { date, label, num, productLabel, unitLabel } from "@/shared/format";
 import { must, requireUser } from "@/shared/supabase/server";
 import { ActionForm, Field, SubmitButton } from "@/shared/ui/form";
 import { experimentStatus, isRecorded } from "@/modules/food/experiments/schema";
@@ -211,7 +211,8 @@ export default async function FormulationPage({
             {runs.map((e) => (
               <li key={e.id}>
                 <Link href={`/projects/${projectId}/experiments/${e.id}`}>
-                  {e.performed_on ?? "Sin fecha"} · {label(experimentStatus, e.status)}
+                  <span className="whitespace-nowrap">{date(e.performed_on, "Sin fecha")}</span> ·{" "}
+                  {label(experimentStatus, e.status)}
                 </Link>
               </li>
             ))}

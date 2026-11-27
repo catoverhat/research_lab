@@ -1,6 +1,17 @@
 "use client";
 
-import { createContext, startTransition, useActionState, useContext, useEffect, useRef, type ReactNode } from "react";
+import {
+  cloneElement,
+  createContext,
+  isValidElement,
+  startTransition,
+  useActionState,
+  useContext,
+  useEffect,
+  useId,
+  useRef,
+  type ReactNode,
+} from "react";
 import { useFormStatus } from "react-dom";
 import type { FormState } from "@/shared/forms";
 
@@ -27,10 +38,16 @@ export function ActionForm({
   const [state, formAction] = useActionState(action, undefined);
   const ref = useRef<HTMLFormElement>(null);
 
+  // Only when a new result arrives: re-running on other changes would steal the focus while typing.
   useEffect(() => {
     if (state?.ok && resetOnSuccess) ref.current?.reset();
+    // After a rejected submit, take the keyboard and screen reader to the first field to fix.
+    if (state?.fieldErrors) ref.current?.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus();
+  }, [state, resetOnSuccess]);
+
+  useEffect(() => {
     if (state) onState?.(state);
-  }, [state, resetOnSuccess, onState]);
+  }, [state, onState]);
 
   return (
     <form
@@ -73,16 +90,33 @@ export function Field({
   hint?: string;
   /** Spans the whole form grid (textareas). */
   wide?: boolean;
+  /** One control (input, select or textarea): it gets aria-invalid and points to its error. */
   children: ReactNode;
 }) {
   const errors = useContext(FieldErrors)?.[name];
+  const id = useId();
+  // The label names the control; hint and error describe it (outside the label, so they are read once).
+  const describedBy = [hint && `${id}-hint`, errors && `${id}-error`].filter(Boolean).join(" ") || undefined;
+  const control = isValidElement<Record<string, unknown>>(children)
+    ? cloneElement(children, { id, "aria-describedby": describedBy, "aria-invalid": errors ? true : undefined })
+    : children;
   return (
-    <label className={wide ? "field sm:col-span-full" : "field"}>
-      <span className="font-medium">{label}</span>
-      {children}
-      {hint && <small className="muted">{hint}</small>}
-      {errors && <small className="text-red-700">{errors.join(" ")}</small>}
-    </label>
+    <div className={wide ? "field sm:col-span-full" : "field"}>
+      <label htmlFor={id} className="font-medium">
+        {label}
+      </label>
+      {control}
+      {hint && (
+        <small id={`${id}-hint`} className="muted">
+          {hint}
+        </small>
+      )}
+      {errors && (
+        <small id={`${id}-error`} className="text-red-700">
+          {errors.join(" ")}
+        </small>
+      )}
+    </div>
   );
 }
 

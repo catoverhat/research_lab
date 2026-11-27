@@ -104,6 +104,16 @@ step("unauthenticated visit redirects to /login");
 await page.goto(`${BASE}/products`, { waitUntil: "networkidle0" });
 assert.equal(new URL(page.url()).pathname, "/login");
 
+step("a blocked Turnstile script tells how to fix it");
+const blocked = await browser.newPage();
+await blocked.setRequestInterception(true);
+blocked.on("request", (r) => (r.url().includes("challenges.cloudflare.com") ? r.abort() : r.continue()));
+await blocked.goto(`${BASE}/login`, { waitUntil: "networkidle0" });
+await blocked.waitForFunction(() => document.body.innerText.includes("No se pudo cargar la verificación"), {
+  timeout: 15000,
+});
+await blocked.close();
+
 step("wrong password shows an error and keeps the email");
 await turnstile();
 await fill("form", { email: EMAIL, password: "wrong" });
@@ -125,6 +135,9 @@ await nav(() => page.click('a[href="/products"]'));
 const productRows = await page.$$eval("tbody tr", (r) => r.length);
 assert.ok(productRows > 0, "the imported products are listed");
 assert.match(await text(), /RD\$/);
+assert.match(await text(), /\d{2}\/\d{2}\/\d{4}/, "dates as dd/mm/yyyy");
+assert.equal(await page.$eval("nav a[aria-current=page]", (a) => a.textContent), "Productos");
+assert.ok(await page.$('a[href="#main"]'), "skip link to the content");
 
 step("create a product with a new ingredient");
 await openDetails("Nuevo producto");
@@ -253,6 +266,28 @@ await openDetails("Editar receta");
 await fill("details form", { serving_size: "250", serving_unit: "" });
 await page.click("details form button[type=submit]");
 await waitText("Indica el tamaño de la ración y su unidad");
+assert.equal(await page.$eval("details [name=serving_size]", (e) => e.getAttribute("aria-invalid")), "true");
+assert.match(
+  await page.$eval("details [name=serving_size]", (e) =>
+    e
+      .getAttribute("aria-describedby")
+      .split(" ")
+      .map((id) => document.getElementById(id)?.textContent)
+      .join(" "),
+  ),
+  /Indica el tamaño de la ración/,
+  "the error describes its field",
+);
+assert.equal(
+  await page.$eval("details [name=serving_size]", (e) => e.labels[0]?.textContent),
+  "Tamaño de la ración",
+  "the label names only the control (error and hint are descriptions)",
+);
+assert.equal(
+  await page.evaluate(() => document.activeElement?.getAttribute("name")),
+  "serving_size",
+  "focus goes to the field to fix",
+);
 
 step("create an experiment; completed needs a date; then the recipe freezes");
 await page.goto(projectUrl, { waitUntil: "networkidle0" });
