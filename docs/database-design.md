@@ -84,16 +84,26 @@ El JSON incluye: el proyecto, las hipótesis, los hallazgos, las formulaciones (
 - Las funciones son `security invoker` con `search_path = ''`. No hay ninguna `security definer`.
 - Los tests están en `supabase/tests/research_core.sql`. Prueban accesos permitidos y denegados (otro usuario, `anon` y Storage), el bloqueo de formulaciones, los cálculos de las vistas y el borrado de un usuario.
 
-## Estrategia de importación de los datos históricos
+## Importación de los datos históricos (fase 2)
 
-La conversación de ChatGPT tiene los datos del chocolate (productos, precios, F01–F05…). Se importan en la fase 2 así:
+Fuentes en `research/chocolate/raw-data/`:
+- `chocolate_research_import_v1.5.json`: la exportación de la conversación de ChatGPT, tal como se entregó.
+- `prices_2026-11-26.json`: precios verificados en la web de Supermercados Nacional, con su URL. Sustituyen a los de la conversación.
 
-1. ChatGPT entrega JSON estructurado en `research/chocolate/raw-data/`: `products.json`, `prices.json`, `formulations.json`, `experiments.json`, `findings.json` y `sources.json`. Cada registro identifica a los demás por su clave natural (por ejemplo, el producto por `brand + name + package_size + unit` y la formulación por `code + version`), nunca por uuid.
-2. Un script de importación (fase 2) lo carga **en una sola transacción**, como el usuario dueño:
-   - catálogo (`ingredients`, `suppliers`, `products`, `product_nutrition`) con upsert por clave natural;
-   - historia (`product_prices`, `experiments`, `sensory_evaluations`, `findings`) solo como inserción.
-3. Si algo falla, no se guarda nada y se puede reintentar. Volver a importar algo que ya entró no está soportado para las filas de historia.
-4. No se inventan datos: lo que la conversación no dice queda `null`. Lo observado sin fuente formal se registra en `sources` con `kind = 'observation'`.
+`research/chocolate/import.mjs <owner-uuid> <out.sql> [--dry-run]` genera un único bloque `do`, que se ejecuta con `pnpm exec supabase db query --file <out.sql>` (y `--remote --yes` para hosted):
+- Entra como el usuario dueño (rol `authenticated` con sus claims): el RLS se aplica y `owner_id` sale de `auth.uid()`.
+- Es una sola sentencia. Si falla un insert o una comprobación, no se guarda nada. Una segunda ejecución choca con las claves únicas y tampoco guarda nada.
+- Antes de terminar comprueba los conteos y que el coste de cada receta en `v_formulation_cost` coincida con el calculado desde el archivo de precios.
+- `--dry-run` lo hace todo y termina con un error a propósito. Es la simulación para hosted.
+
+Decisiones de mapeo, revisadas con el usuario el 2026-11-26. Están como constantes al principio del script:
+- Una presentación por producto: Munné 5 oz y 16 oz son dos productos.
+- Porción explícita: cada receta es 1 ración de 250 ml (`servings`, `serving_size`, `serving_unit`).
+- Cantidades confirmadas por el usuario: F03 usa 8 g de maicena; la leche es siempre Parmalat semidescremada de 1000 ml.
+- Sin dato fiable, `null` y nota en el producto: la nutrición de Embajador (porción no confirmada), los límites superiores ("≤ 0.5 g") y la fibra dudosa de Munné.
+- Evidencia: lo observado o derivado es `preliminary`, y lo que la exportación declara no controlado es `anecdotal`. Nada es `confirmed`.
+- Lo que no tiene tabla (metodología, seguridad, limitaciones y la lista de lo no importado) va en `research_reports` versión 1.
+- No se importan: el experimento sin receta E06 (su observación va en un hallazgo), la leche entera Líder y las fotos, que no están disponibles.
 
 ## Atajos conocidos
 

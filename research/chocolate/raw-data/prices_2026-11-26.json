@@ -1,0 +1,113 @@
+{
+  "observed_on": "2026-11-26",
+  "currency": "DOP",
+  "supplier_id": "S01",
+  "method": "Precio leído en la página de producto de Supermercados Nacional el 2026-11-26. Si hay precio especial, se registra el habitual y el especial va en notas. supermercadosrd.com bloquea la lectura automática de sus páginas de producto. Ninguna foto disponible incluía precio.",
+  "prices": [
+    {
+      "product_id": "P01",
+      "package_quantity": 260,
+      "package_unit": "g",
+      "price": 115.95,
+      "special_price": 109.0,
+      "in_stock": null,
+      "title": "Chocolate Embajador 10 Und/Paq",
+      "url": "https://supermercadosnacional.com/chocolate-embajador-10-und-paq-2010586"
+    },
+    {
+      "product_id": "P02",
+      "package_quantity": 400,
+      "package_unit": "g",
+      "price": 389.95,
+      "in_stock": false,
+      "title": "Chocolate Negro Intenso A La Taza Valor Cao 400 Gr",
+      "url": "https://supermercadosnacional.com/chocolate-negro-intenso-a-la-taza-valor-cao-400-gr-2179841",
+      "notes": "La página ofrece avisar cuando vuelva a stock."
+    },
+    {
+      "product_id": "P03",
+      "package_quantity": 200,
+      "package_unit": "g",
+      "price": 259.95,
+      "in_stock": null,
+      "title": "Chocolate Sin Azucar Valor Cao 200 Gr",
+      "url": "https://supermercadosnacional.com/chocolate-sin-azucar-valor-cao-200-gr-2010512"
+    },
+    {
+      "product_id": "P04",
+      "package_quantity": 250,
+      "package_unit": "g",
+      "price": 229.95,
+      "in_stock": null,
+      "title": "Chocolate Valor Cao 250 Gr",
+      "url": "https://supermercadosnacional.com/chocolate-valor-cao-250-gr-2094804"
+    },
+    {
+      "product_id": "P05",
+      "package_quantity": 141.75,
+      "package_unit": "g",
+      "price": 234.95,
+      "in_stock": null,
+      "title": "Cocoa Amarga Munne 5 Onz",
+      "url": "https://supermercadosnacional.com/cocoa-amarga-munne-5-onz-2010684"
+    },
+    {
+      "product_id": "P05",
+      "package_quantity": 453.592,
+      "package_unit": "g",
+      "price": 559.95,
+      "in_stock": null,
+      "title": "Cocoa Amarga Munne 16 Onz",
+      "url": "https://supermercadosnacional.com/cocoa-amarga-munne-16-onz-2022722"
+    },
+    {
+      "product_id": "P06",
+      "package_quantity": 226.8,
+      "package_unit": "g",
+      "price": 494.95,
+      "in_stock": false,
+      "title": "Chocolala Cacao En Polvo Corazon Dominicano 1/2 Lb",
+      "url": "https://supermercadosnacional.com/chocolala-cacao-en-polvo-corazon-dominicano-1-2-lb-2180112",
+      "notes": "La ficha indica 2 Lb en otro campo; peso por confirmar. La página ofrece avisar cuando vuelva a stock."
+    },
+    {
+      "product_id": "P07",
+      "package_quantity": 200,
+      "package_unit": "g",
+      "price": 159.95,
+      "in_stock": null,
+      "title": "Cocoa Amarga Líder 7 oz",
+      "url": "https://supermercadosnacional.com/cocoa-amarga-lider-7-oz-2235232",
+      "notes": "Nacional lo lista como 7 oz; la conversación registró 200 g según el envase."
+    },
+    {
+      "product_id": "P08",
+      "package_quantity": 425,
+      "package_unit": "g",
+      "price": 138.95,
+      "special_price": 122.0,
+      "in_stock": null,
+      "title": "Fecula De Maiz Maizena Duryea 425 Gr",
+      "url": "https://supermercadosnacional.com/fecula-de-maiz-maizena-duryea-425-gr-2191344"
+    },
+    {
+      "product_id": "P09",
+      "package_quantity": 1000,
+      "package_unit": "ml",
+      "price": 85.95,
+      "special_price": 79.95,
+      "in_stock": null,
+      "title": "Leche Semidescremada Parmalat 1 Lt",
+      "url": "https://supermercadosnacional.com/lacteos-y-huevos/leches/leche-liquida/leche-semidescremada-parmalat-1-lt-2801065"
+    },
+    {
+      "product_id": "P10",
+      "package_quantity": 80,
+      "package_unit": "g",
+      "price": 84.95,
+      "in_stock": null,
+      "title": "Canela Molida Líder 80 Gr",
+      "url": "https://supermercadosnacional.com/canela-molida-lider-80-gr-2168261"
+    }
+  ]
+}

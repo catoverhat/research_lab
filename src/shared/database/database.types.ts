@@ -195,14 +195,14 @@ isOneToOne: false
                   ]
                 },"formulations": {
                   Row: {
-                    "code": string,"created_at": string,"id": string,"instructions": string | null,"name": string | null,"notes": string | null,"owner_id": string,"parent_id": string | null,"project_id": string,"servings": number | null,"status": string,"version": number
+                    "code": string,"created_at": string,"id": string,"instructions": string | null,"name": string | null,"notes": string | null,"owner_id": string,"parent_id": string | null,"project_id": string,"serving_size": number | null,"serving_unit": string | null,"servings": number | null,"status": string,"version": number
                   }
                   ComputedFields: never
                   Insert: {
-                    "code": string,"created_at"?: string,"id"?: string,"instructions"?: string | null,"name"?: string | null,"notes"?: string | null,"owner_id"?: string,"parent_id"?: string | null,"project_id": string,"servings"?: number | null,"status"?: string,"version"?: number
+                    "code": string,"created_at"?: string,"id"?: string,"instructions"?: string | null,"name"?: string | null,"notes"?: string | null,"owner_id"?: string,"parent_id"?: string | null,"project_id": string,"serving_size"?: number | null,"serving_unit"?: string | null,"servings"?: number | null,"status"?: string,"version"?: number
                   }
                   Update: {
-                    "code"?: string,"created_at"?: string,"id"?: string,"instructions"?: string | null,"name"?: string | null,"notes"?: string | null,"owner_id"?: string,"parent_id"?: string | null,"project_id"?: string,"servings"?: number | null,"status"?: string,"version"?: number
+                    "code"?: string,"created_at"?: string,"id"?: string,"instructions"?: string | null,"name"?: string | null,"notes"?: string | null,"owner_id"?: string,"parent_id"?: string | null,"project_id"?: string,"serving_size"?: number | null,"serving_unit"?: string | null,"servings"?: number | null,"status"?: string,"version"?: number
                   }
                   Relationships: [
                     {

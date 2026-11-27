@@ -1,6 +1,6 @@
 begin;
 
-select plan(39);
+select plan(40);
 
 insert into auth.users (id, raw_app_meta_data, raw_user_meta_data) values
   ('10000000-0000-0000-0000-00000000000a', '{}', '{}'),
@@ -90,8 +90,15 @@ insert into public.product_nutrition (product_id, energy_kcal, fat_g) values
   ('30000000-0000-0000-0000-000000000001', 400, 20),
   ('30000000-0000-0000-0000-000000000002', 50, null);
 
-insert into public.formulations (id, project_id, code, servings)
-values ('40000000-0000-0000-0000-000000000001', '20000000-0000-0000-0000-000000000001', 'F01', 2);
+insert into public.formulations (id, project_id, code, servings, serving_size, serving_unit)
+values ('40000000-0000-0000-0000-000000000001', '20000000-0000-0000-0000-000000000001', 'F01', 2, 250, 'ml');
+
+select throws_ok(
+  $$ insert into public.formulations (project_id, code, servings, serving_size)
+     values ('20000000-0000-0000-0000-000000000001', 'F99', 1, 250) $$,
+  '23514', null,
+  'a serving size needs its unit'
+);
 
 insert into public.formulation_ingredients (formulation_id, product_id, quantity) values
   ('40000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000001', 50),
