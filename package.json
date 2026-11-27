@@ -1,0 +1,24 @@
+{
+  "name": "food-research-lab",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "supabase:start": "supabase start",
+    "supabase:stop": "supabase stop",
+    "supabase:status": "supabase status",
+    "supabase:migrations:list": "supabase migration list --linked",
+    "supabase:migration:new": "supabase migration new",
+    "supabase:migrations:up:local": "supabase migration up --local",
+    "supabase:db:reset:local": "supabase db reset --local",
+    "supabase:test:local": "supabase test db --local",
+    "supabase:db:push:dry-run": "supabase db push --linked --dry-run",
+    "supabase:types": "supabase gen types typescript --local --schema public > src/shared/database/database.types.ts",
+    "supabase:types:remote": "supabase gen types typescript --linked --schema public > src/shared/database/database.types.ts"
+  },
+  "devDependencies": {
+    "supabase": "2.75.0",
+    "typescript": "^5.9.3"
+  },
+  "packageManager": "pnpm@12.8.1"
+}
