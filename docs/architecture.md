@@ -24,6 +24,21 @@ No hacen falta pgvector ni RAG: los datos son estructurados y SQL los compara co
 
 Auth tiene la misma configuración que shots-bar: signup, inicio de sesión anónimo, vinculación manual de cuentas y rotación de refresh tokens activados. Captcha Turnstile (`SUPABASE_AUTH_CAPTCHA_SECRET`). Sin confirmación de email.
 
+## Módulos
+
+La plataforma no es solo para alimentos. Cualquier investigación para decidir con evidencia (optimizar una receta, elegir qué comprar) usa el mismo **núcleo común**, y cada tipo de investigación añade su **módulo**:
+
+| | Qué incluye | Estado |
+|---|---|---|
+| Núcleo común | Proyectos, productos, proveedores, historial de precios, fuentes, hipótesis, hallazgos, adjuntos, informes, exportación para IA y notas de excepción | Hecho |
+| Alimentos | Nutrición, formulaciones versionadas, experimentos sobre recetas, evaluación sensorial | Hecho (caso: chocolate) |
+| Compras | Especificaciones técnicas por producto (atributo, valor, unidad y fuente), experimentos sobre un producto (p. ej. medir el ruido de un abanico) y tipo de proyecto para mostrar solo las pestañas que aplican | Futuro |
+| Común a todos, futuro | Matriz de decisión: criterios con peso y dirección ("menos ruido es mejor"), puntuaciones y ranking ponderado. También sirve al chocolate (su índice de calidad propuesto) | Futuro |
+
+- **Una sola plataforma, no un proyecto por tema.** El plan Free admite 2 proyectos activos por organización, y un proyecto aparte duplicaría login, keepalive, frontend e integración con IA.
+- **Los módulos futuros se construyen con su primer caso real**, como el chocolate: los datos reales definen el esquema. Todo lo nuevo es aditivo (tablas y columnas nuevas), así que no obliga a rehacer nada.
+- **El frontend (fase 3) se organiza por núcleo y módulos.** No debe quedar escrito alrededor del chocolate.
+
 ## Decisiones
 
 - **Propiedad por fila, sin roles.** Es una herramienta personal. Si algún día se comparte un proyecto, se añadirían miembros por proyecto y FK compuestas (ver `database-design.md`).
