@@ -72,12 +72,45 @@ Antes de cambiar algo de Supabase, consulta la documentación oficial: https://s
 - Prohibido salvo que el usuario lo pida: `db reset --remote`, `db push --include-seed`, `migration repair`.
 - No hagas commit de `supabase/.temp/`, `supabase/.branches/`, `.env*`, claves ni volcados de datos reales.
 
-### Docker en Windows
+## Anti-pausa (plan Free)
+
+Hay dos piezas: la función `public.keepalive()`, ejecutable solo por `anon`, y el workflow `.github/workflows/supabase-keepalive.yml`, que la llama 3 veces al día. Necesita los secrets `SUPABASE_URL` y `SUPABASE_PUBLISHABLE_KEY`, y que el repo sea **privado**: en repos públicos, GitHub desactiva los cron tras 60 días sin actividad.
+
+## Avisos de herramientas
+
+Lo que hacen las herramientas y no se espera: no son fallos del código del proyecto. Cuando algo falle por la herramienta, añade aquí qué pasa y cómo evitarlo.
+
+### Supabase local (Docker en Windows)
 
 - `pnpm supabase:db:reset:local` puede terminar con `Error status 502` **después** de `Restarting containers...`. Eso es la salud de Storage o Kong al reiniciar, no la migración. Si las migraciones aparecen como `Applying migration ...` sin error, la base está bien.
 - Si después la API sigue en 502: `pnpm supabase:stop`, luego `pnpm supabase:start`.
 - El contenedor `vector` (logs) entra en bucle de reinicios porque no alcanza el daemon de Docker. Si bloquea `supabase start` por conflicto de nombre, elimina solo ese contenedor: `docker rm -f supabase_vector_research_lab`.
+- El reset borra los datos importados y el usuario de prueba. Recrea el usuario con la API de administración local (ver README) y vuelve a importar con `research/chocolate/import.mjs`, las etiquetas y las correcciones de `research/chocolate/fixes/`.
 
-## Anti-pausa (plan Free)
+### Supabase hosted (configuración de Auth)
 
-Hay dos piezas: la función `public.keepalive()`, ejecutable solo por `anon`, y el workflow `.github/workflows/supabase-keepalive.yml`, que la llama 3 veces al día. Necesita los secrets `SUPABASE_URL` y `SUPABASE_PUBLISHABLE_KEY`, y que el repo sea **privado**: en repos públicos, GitHub desactiva los cron tras 60 días sin actividad.
+- `supabase config push` envía **todo** lo que declara `config.toml`, y este tiene valores de local: `site_url` con localhost, frecuencia de emails, longitud del OTP, MFA y tamaño del pool. Nunca lo empujes tal cual. Usa un `config.toml` mínimo, con solo lo que quieres cambiar, en otra carpeta con `--workdir`, y revisa antes `supabase config diff`. Lo que el archivo no declara queda igual en hosted.
+- El CLI no sincroniza las passkeys (`[auth.passkey]` ni `[auth.webauthn]`): van por la API de gestión (`PATCH /v1/projects/<ref>/config/auth` con `passkey_enabled` y `webauthn_rp_*`).
+- Cambiar el RP ID de las passkeys invalida todas las registradas.
+
+### Vercel CLI
+
+- `vercel link` escribe un `VERCEL_OIDC_TOKEN` en `.env.local` y repite líneas en `.gitignore`. Copia `.env.local` antes, restáurala después y revisa el diff del `.gitignore`.
+- `vercel env add` pide confirmación con los nombres que parecen secretos (`…KEY`), aunque no haya terminal. Usa `--type config --value <valor> --yes` para valores públicos (`NEXT_PUBLIC_*`) y `--type secret` para los privados.
+- Las variables `NEXT_PUBLIC_*` se incrustan al compilar: tras cambiarlas, hace falta un despliegue nuevo.
+- Crear un proyecto desde el CLI lo deja con el preset "Other". El framework se fija en `vercel.json`.
+
+### Turnstile y navegadores automatizados
+
+- En modo "Managed", Turnstile no entrega token a un navegador automatizado. `pnpm test:e2e` solo funciona en local, con las claves de prueba de Cloudflare. En producción, comprueba que el widget se pinte sin error de dominio; la entrada real la hace una persona.
+- `puppeteer.launch()` no arranca Edge en este Windows. Lanza el navegador con `--remote-debugging-port=0` y conéctate leyendo el puerto de `DevToolsActivePort` (ver `e2e/smoke.mjs`).
+
+### Terminales en Windows
+
+- Git Bash convierte en ruta de Windows cualquier argumento que empiece por `/`: `curl -w "/login"` imprime `C:/Program Files/Git/login`. Evita empezar así o usa `MSYS_NO_PATHCONV=1`.
+- PowerShell 5.1 parte los argumentos con comillas de los programas nativos: un `git commit -m` de varias líneas falla. Escribe el mensaje en un archivo y usa `git commit -F <archivo>`.
+- Con `core.autocrlf=true`, Git convierte a CRLF al hacer checkout. El SHA-256 de un archivo clonado no coincide con el publicado: calcúlalo sobre `git show HEAD:<ruta>`.
+
+### PostgreSQL
+
+- Una función que escribe, llamada en un `WHERE` (`where id = f()`), se ejecuta una vez por fila. En los tests, llámala una sola vez con `select set_config('test.x', f()::text, true)` y lee `current_setting('test.x')` (ver `supabase/tests/domain_rules.sql`).
