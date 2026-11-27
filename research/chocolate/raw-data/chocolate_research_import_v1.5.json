@@ -1,0 +1,1346 @@
+{
+  "schema_version": "1.0.0",
+  "research_version": "1.5",
+  "exported_on": "2026-11-26",
+  "locale": "es-DO",
+  "currency": "DOP",
+  "project": {
+    "id": "CHOCOLATE-001",
+    "title": "Optimización experimental del chocolate a la taza",
+    "status": "active",
+    "objectives": [
+      "precio-calidad",
+      "sabor e intensidad",
+      "espesor estilo español",
+      "reducción de azúcares añadidos",
+      "disponibilidad",
+      "mejoras iterativas",
+      "desarrollo de formulación independiente"
+    ],
+    "control": {
+      "milk_product_id": "P09",
+      "milk_ml": 250
+    },
+    "sensory_reference_id": "F01",
+    "current_validated_formulation_id": "F05",
+    "preferred_cocoa_product_id": "P05",
+    "lowest_cost_cocoa_product_id": "P07"
+  },
+  "suppliers": [
+    {
+      "id": "S01",
+      "name": "Supermercados Nacional",
+      "country": "DO",
+      "website": "https://supermercadosnacional.com/"
+    }
+  ],
+  "products": [
+    {
+      "id": "P01",
+      "name": "Chocolate Embajador Cortés",
+      "category": "chocolate_de_mesa",
+      "package_quantity": 260,
+      "package_unit": "g",
+      "cocoa_percent_declared": null,
+      "ingredients": null,
+      "nutrition": {
+        "basis_g": 30,
+        "basis_status": "unverified",
+        "sugars_g": 18,
+        "added_sugars_g": 18,
+        "fat_g": 4,
+        "saturated_fat_g": 3,
+        "carbohydrates_g": 20,
+        "protein_g_upper_bound": 1,
+        "sodium_mg": 30
+      },
+      "notes": "10 tabletas de 26 g según usuario; peso comercial inferido. Porción nutricional de 30 g asumida previamente, no confirmada.",
+      "evidence_files": [
+        "image-1792961469228.jpg",
+        "image-1792963596182.jpg"
+      ]
+    },
+    {
+      "id": "P02",
+      "name": "Valorcao a la Taza Negro Intenso",
+      "category": "preparado",
+      "package_quantity": 400,
+      "package_unit": "g",
+      "cocoa_percent_declared": 30,
+      "ingredients": "Azúcar, cacao desgrasado, almidón de maíz, lecitina de soja, aromas (transcripción histórica)",
+      "nutrition": {
+        "basis_g": 100,
+        "energy_kcal": 376,
+        "carbohydrates_g": 72,
+        "sugars_g": 57,
+        "fat_g": 3.7,
+        "protein_g": 8.2
+      },
+      "notes": "Referencia sensorial superior; no disponible según usuario y consulta histórica.",
+      "evidence_files": [
+        "image-1792964120113.jpg",
+        "image-1792964154965.jpg"
+      ]
+    },
+    {
+      "id": "P03",
+      "name": "Valorcao a la Taza 0% azúcares añadidos",
+      "category": "preparado",
+      "package_quantity": 200,
+      "package_unit": "g",
+      "cocoa_percent_declared": 20,
+      "ingredients": "Cacao, almidón, maltitol, lecitina y aromas según registro previo",
+      "nutrition": {
+        "basis_g": 100,
+        "energy_kcal": 276,
+        "sugars_g_upper_bound": 0.5,
+        "fat_g": 2.6,
+        "added_sugars_g": 0
+      },
+      "notes": "Base preferida disponible; contiene maltitol. Valores históricos de etiqueta pendientes de cotejo.",
+      "evidence_files": []
+    },
+    {
+      "id": "P04",
+      "name": "Valorcao convencional",
+      "category": "preparado",
+      "package_quantity": 250,
+      "package_unit": "g",
+      "cocoa_percent_declared": null,
+      "ingredients": null,
+      "nutrition": null,
+      "notes": "Ficha comercial histórica; no equiparar con Intenso. Usuario compara dos versiones de 200 g; presentación exacta convencional pendiente de aclarar.",
+      "evidence_files": []
+    },
+    {
+      "id": "P05",
+      "name": "Munné Cocoa Amarga",
+      "category": "cacao",
+      "package_quantity": null,
+      "package_unit": "g",
+      "cocoa_percent_declared": null,
+      "ingredients": "Cacao tratado con álcali",
+      "nutrition": {
+        "basis_g": 5,
+        "energy_kcal": 16,
+        "fat_g": 0.8,
+        "carbohydrates_g": 1,
+        "fiber_g": 1,
+        "sugars_g": 0,
+        "protein_g": 1,
+        "status": "historical_transcription_fiber_discrepancy"
+      },
+      "notes": "Alcalinizado. Preferido por intensidad y amargor observados; no comparación ciega controlada.",
+      "evidence_files": []
+    },
+    {
+      "id": "P06",
+      "name": "Chocolala cacao en polvo",
+      "category": "cacao",
+      "package_quantity": 226.8,
+      "package_unit": "g",
+      "cocoa_percent_declared": null,
+      "ingredients": null,
+      "nutrition": {
+        "basis_g": 15,
+        "energy_kcal": 85,
+        "fat_g": 5,
+        "carbohydrates_g": 8,
+        "fiber_g": 4,
+        "sugars_g": 0,
+        "protein_g": 1
+      },
+      "notes": "Peso de ficha comercial provisional: título media libra, otro campo dos libras. Verificar lote y vencimiento: foto previa parecía indicar julio 2024, no confirmado.",
+      "evidence_files": []
+    },
+    {
+      "id": "P07",
+      "name": "Cocoa Amarga Líder",
+      "category": "cacao",
+      "package_quantity": 200,
+      "package_unit": "g",
+      "cocoa_percent_declared": 100,
+      "ingredients": "100% cocoa amarga",
+      "nutrition": {
+        "basis_g": 100,
+        "energy_kcal": 228,
+        "fat_g": 14,
+        "carbohydrates_g": 58,
+        "fiber_g": 33,
+        "protein_g": 20,
+        "sugars_g": null
+      },
+      "notes": "100% cocoa amarga. PanaPack S.A., Panamá, distribuidor CCN; alcalinización desconocida. Calidad sensorial pendiente.",
+      "evidence_files": [
+        "image-1795734650798.jpg"
+      ]
+    },
+    {
+      "id": "P08",
+      "name": "Maicena Duryea",
+      "category": "espesante",
+      "package_quantity": 425,
+      "package_unit": "g",
+      "cocoa_percent_declared": null,
+      "ingredients": "Almidón de maíz",
+      "nutrition": null,
+      "notes": "Marca usada para referencia económica; marca exacta de la fécula utilizada no confirmada.",
+      "evidence_files": []
+    },
+    {
+      "id": "P09",
+      "name": "Parmalat semidescremada enriquecida",
+      "category": "leche",
+      "package_quantity": 1000,
+      "package_unit": "ml",
+      "cocoa_percent_declared": null,
+      "ingredients": null,
+      "nutrition": {
+        "basis_ml": 250,
+        "energy_kcal": 120,
+        "fat_g": 4,
+        "saturated_fat_g": 2.5,
+        "cholesterol_mg": 15,
+        "sodium_mg": 125,
+        "carbohydrates_g": 12,
+        "sugars_g": 12,
+        "protein_g": 8
+      },
+      "notes": "Leche habitual confirmada por usuario. Precio pendiente.",
+      "evidence_files": [
+        "image-1795733400236.jpg"
+      ]
+    },
+    {
+      "id": "P10",
+      "name": "Canela molida Líder",
+      "category": "especia",
+      "package_quantity": 80,
+      "package_unit": "g",
+      "cocoa_percent_declared": null,
+      "ingredients": "100% canela",
+      "nutrition": null,
+      "notes": "Especie botánica y cumarina desconocidas; presentación económica histórica de 80 g no necesariamente envase usado.",
+      "evidence_files": []
+    },
+    {
+      "id": "P11",
+      "name": "Leche entera Líder",
+      "category": "leche",
+      "package_quantity": 1000,
+      "package_unit": "ml",
+      "cocoa_percent_declared": null,
+      "ingredients": null,
+      "nutrition": null,
+      "notes": "Solo referencia económica histórica descartada como leche de control.",
+      "evidence_files": []
+    }
+  ],
+  "product_prices": [
+    {
+      "id": "PR01",
+      "product_id": "P01",
+      "supplier_id": "S01",
+      "observed_on": "2026-11-26",
+      "currency": "DOP",
+      "package_quantity": 260,
+      "package_unit": "g",
+      "price": 115.95,
+      "availability": "unknown",
+      "source_url": "https://supermercadosnacional.com/chocolate-embajador-10-und-paq-2010586",
+      "verification_status": "historical_chat_report_not_reverified",
+      "notes": "Peso inferido de 10 x 26 g"
+    },
+    {
+      "id": "PR02",
+      "product_id": "P02",
+      "supplier_id": "S01",
+      "observed_on": "2026-11-26",
+      "currency": "DOP",
+      "package_quantity": 400,
+      "package_unit": "g",
+      "price": 389.95,
+      "availability": "out_of_stock",
+      "source_url": "https://supermercadosnacional.com/chocolate-negro-intenso-a-la-taza-valor-cao-400-gr-2179841",
+      "verification_status": "historical_chat_report_not_reverified",
+      "notes": null
+    },
+    {
+      "id": "PR03",
+      "product_id": "P03",
+      "supplier_id": "S01",
+      "observed_on": "2026-11-26",
+      "currency": "DOP",
+      "package_quantity": 200,
+      "package_unit": "g",
+      "price": 259.95,
+      "availability": "unknown",
+      "source_url": "https://supermercadosnacional.com/chocolate-sin-azucar-valor-cao-200-gr-2010512",
+      "verification_status": "historical_chat_report_not_reverified",
+      "notes": null
+    },
+    {
+      "id": "PR04",
+      "product_id": "P04",
+      "supplier_id": "S01",
+      "observed_on": "2026-11-26",
+      "currency": "DOP",
+      "package_quantity": 250,
+      "package_unit": "g",
+      "price": 229.95,
+      "availability": "unknown",
+      "source_url": "https://supermercadosnacional.com/chocolate-valor-cao-250-gr-2094804",
+      "verification_status": "historical_chat_report_not_reverified",
+      "notes": null
+    },
+    {
+      "id": "PR05",
+      "product_id": "P05",
+      "supplier_id": "S01",
+      "observed_on": "2026-11-26",
+      "currency": "DOP",
+      "package_quantity": 141.75,
+      "package_unit": "g",
+      "price": 234.95,
+      "availability": "unknown",
+      "source_url": null,
+      "verification_status": "historical_chat_report_not_reverified",
+      "notes": null
+    },
+    {
+      "id": "PR06",
+      "product_id": "P05",
+      "supplier_id": "S01",
+      "observed_on": "2026-11-26",
+      "currency": "DOP",
+      "package_quantity": 453.592,
+      "package_unit": "g",
+      "price": 559.95,
+      "availability": "unknown",
+      "source_url": "https://supermercadosnacional.com/cocoa-amarga-munne-16-onz-2022722",
+      "verification_status": "historical_chat_report_not_reverified",
+      "notes": null
+    },
+    {
+      "id": "PR07",
+      "product_id": "P06",
+      "supplier_id": "S01",
+      "observed_on": "2026-11-26",
+      "currency": "DOP",
+      "package_quantity": 226.8,
+      "package_unit": "g",
+      "price": 494.95,
+      "availability": "out_of_stock",
+      "source_url": "https://supermercadosnacional.com/chocolala-cacao-en-polvo-corazon-dominicano-1-2-lb-2180112",
+      "verification_status": "historical_chat_report_not_reverified",
+      "notes": "Peso contradictorio en ficha; costo provisional"
+    },
+    {
+      "id": "PR08",
+      "product_id": "P07",
+      "supplier_id": "S01",
+      "observed_on": "2026-11-26",
+      "currency": "DOP",
+      "package_quantity": 200,
+      "package_unit": "g",
+      "price": 159.95,
+      "availability": "unknown",
+      "source_url": null,
+      "verification_status": "historical_chat_report_not_reverified",
+      "notes": "7 oz redondeadas a 200 g según envase; URL exacta no preservada"
+    },
+    {
+      "id": "PR09",
+      "product_id": "P08",
+      "supplier_id": "S01",
+      "observed_on": "2026-11-26",
+      "currency": "DOP",
+      "package_quantity": 425,
+      "package_unit": "g",
+      "price": 138.95,
+      "availability": "unknown",
+      "source_url": "https://supermercadosnacional.com/fecula-de-maiz-maizena-duryea-425-gr-2191344",
+      "verification_status": "historical_chat_report_not_reverified",
+      "notes": null
+    },
+    {
+      "id": "PR10",
+      "product_id": "P10",
+      "supplier_id": "S01",
+      "observed_on": "2026-11-26",
+      "currency": "DOP",
+      "package_quantity": 80,
+      "package_unit": "g",
+      "price": 84.95,
+      "availability": "unknown",
+      "source_url": null,
+      "verification_status": "historical_chat_report_not_reverified",
+      "notes": null
+    },
+    {
+      "id": "PR11",
+      "product_id": "P11",
+      "supplier_id": "S01",
+      "observed_on": "2026-11-26",
+      "currency": "DOP",
+      "package_quantity": 1000,
+      "package_unit": "ml",
+      "price": 59,
+      "availability": "unknown",
+      "source_url": null,
+      "verification_status": "historical_chat_report_not_reverified",
+      "notes": "No usar como precio de Parmalat"
+    },
+    {
+      "id": "PR12",
+      "product_id": "P09",
+      "supplier_id": "S01",
+      "observed_on": "2026-11-26",
+      "currency": "DOP",
+      "package_quantity": 1000,
+      "package_unit": "ml",
+      "price": null,
+      "availability": "unknown",
+      "source_url": null,
+      "verification_status": "historical_chat_report_not_reverified",
+      "notes": "Pendiente de verificar"
+    }
+  ],
+  "formulations": [
+    {
+      "id": "F01",
+      "name": "Valor Intenso referencia",
+      "status": "tested_satisfactory",
+      "ingredients": [
+        {
+          "product_id": "P09",
+          "quantity": 250,
+          "unit": "ml",
+          "quantity_status": "habitual_milk_assumed_for_historical_runs"
+        },
+        {
+          "product_id": "P02",
+          "unit": "g",
+          "quantity": 60,
+          "reference_price_id": "PR02"
+        }
+      ],
+      "notes": "Sin maicena adicional; espesor preferido.",
+      "historical_alias": null,
+      "cost_estimate_dop_excluding_milk": 58.49,
+      "cost_provisional": false,
+      "cost_includes_sweetener": false,
+      "cost_method": "historical_catalog_prices; midpoint for ranges; excluding milk, energy and unselected sweetener"
+    },
+    {
+      "id": "F02",
+      "name": "Embajador una tableta",
+      "status": "tested_unsatisfactory",
+      "ingredients": [
+        {
+          "product_id": "P09",
+          "quantity": 250,
+          "unit": "ml",
+          "quantity_status": "habitual_milk_assumed_for_historical_runs"
+        },
+        {
+          "product_id": "P01",
+          "unit": "g",
+          "quantity": 26,
+          "reference_price_id": "PR01"
+        }
+      ],
+      "notes": "Intensidad insuficiente; cantidad de maicena no confirmada, ausencia en lista no significa cero.",
+      "historical_alias": null,
+      "cost_estimate_dop_excluding_milk": 11.6,
+      "cost_provisional": false,
+      "cost_includes_sweetener": false,
+      "cost_method": "historical_catalog_prices; midpoint for ranges; excluding milk, energy and unselected sweetener"
+    },
+    {
+      "id": "F03",
+      "name": "Embajador dos tabletas",
+      "status": "tested",
+      "ingredients": [
+        {
+          "product_id": "P09",
+          "quantity": 250,
+          "unit": "ml",
+          "quantity_status": "habitual_milk_assumed_for_historical_runs"
+        },
+        {
+          "product_id": "P01",
+          "unit": "g",
+          "quantity": 52,
+          "reference_price_id": "PR01"
+        },
+        {
+          "product_id": "P08",
+          "unit": "g",
+          "quantity": null,
+          "quantity_min": 8,
+          "quantity_max": 10,
+          "reference_price_id": "PR09"
+        }
+      ],
+      "notes": "Se incrementó chocolate por intensidad; resultado final de sabor no cuantificado.",
+      "historical_alias": null,
+      "cost_estimate_dop_excluding_milk": 26.13,
+      "cost_provisional": false,
+      "cost_includes_sweetener": false,
+      "cost_method": "historical_catalog_prices; midpoint for ranges; excluding milk, energy and unselected sweetener"
+    },
+    {
+      "id": "F04",
+      "name": "Embajador y Munné",
+      "status": "proposed",
+      "ingredients": [
+        {
+          "product_id": "P09",
+          "quantity": 250,
+          "unit": "ml",
+          "quantity_status": "habitual_milk_assumed_for_historical_runs"
+        },
+        {
+          "product_id": "P01",
+          "unit": "g",
+          "quantity": 26,
+          "reference_price_id": "PR01"
+        },
+        {
+          "product_id": "P05",
+          "unit": "g",
+          "quantity": 10,
+          "reference_price_id": "PR06"
+        },
+        {
+          "product_id": "P08",
+          "unit": "g",
+          "quantity": 10,
+          "reference_price_id": "PR09"
+        }
+      ],
+      "notes": "Se reportó después preferencia por Munné con Valor anterior, no confirma esta receta exacta. Versión 500 ml duplica cantidades.",
+      "historical_alias": null,
+      "cost_estimate_dop_excluding_milk": 27.21,
+      "cost_provisional": false,
+      "cost_includes_sweetener": false,
+      "cost_method": "historical_catalog_prices; midpoint for ranges; excluding milk, energy and unselected sweetener"
+    },
+    {
+      "id": "F05",
+      "name": "Valor 0% y Chocolala",
+      "status": "tested_satisfactory",
+      "ingredients": [
+        {
+          "product_id": "P09",
+          "quantity": 250,
+          "unit": "ml",
+          "quantity_status": "habitual_milk_assumed_for_historical_runs"
+        },
+        {
+          "product_id": "P03",
+          "unit": "g",
+          "quantity": 50,
+          "reference_price_id": "PR03"
+        },
+        {
+          "product_id": "P06",
+          "unit": "g",
+          "quantity": 10,
+          "reference_price_id": "PR07"
+        }
+      ],
+      "notes": "Referencia actual confirmada por usuario; sin maicena.",
+      "historical_alias": null,
+      "cost_estimate_dop_excluding_milk": 86.81,
+      "cost_provisional": true,
+      "cost_includes_sweetener": false,
+      "cost_method": "historical_catalog_prices; midpoint for ranges; excluding milk, energy and unselected sweetener"
+    },
+    {
+      "id": "F06",
+      "name": "Valor 0% reducido y Chocolala",
+      "status": "proposed",
+      "ingredients": [
+        {
+          "product_id": "P09",
+          "quantity": 250,
+          "unit": "ml",
+          "quantity_status": "habitual_milk_assumed_for_historical_runs"
+        },
+        {
+          "product_id": "P03",
+          "unit": "g",
+          "quantity": 40,
+          "reference_price_id": "PR03"
+        },
+        {
+          "product_id": "P06",
+          "unit": "g",
+          "quantity": 20,
+          "reference_price_id": "PR07"
+        },
+        {
+          "product_id": "P08",
+          "unit": "g",
+          "quantity": 5,
+          "reference_price_id": "PR09"
+        }
+      ],
+      "notes": "Variante indicada por usuario para compensar espesor; resultado no confirmado.",
+      "historical_alias": null,
+      "cost_estimate_dop_excluding_milk": 97.27,
+      "cost_provisional": true,
+      "cost_includes_sweetener": false,
+      "cost_method": "historical_catalog_prices; midpoint for ranges; excluding milk, energy and unselected sweetener"
+    },
+    {
+      "id": "F07",
+      "name": "Valor 0% y Munné",
+      "status": "proposed",
+      "ingredients": [
+        {
+          "product_id": "P09",
+          "quantity": 250,
+          "unit": "ml",
+          "quantity_status": "habitual_milk_assumed_for_historical_runs"
+        },
+        {
+          "product_id": "P03",
+          "unit": "g",
+          "quantity": 50,
+          "reference_price_id": "PR03"
+        },
+        {
+          "product_id": "P05",
+          "unit": "g",
+          "quantity": 10,
+          "reference_price_id": "PR06"
+        }
+      ],
+      "notes": "Preferencia general por Munné no equivale a validación de esta dosis exacta.",
+      "historical_alias": null,
+      "cost_estimate_dop_excluding_milk": 77.33,
+      "cost_provisional": false,
+      "cost_includes_sweetener": false,
+      "cost_method": "historical_catalog_prices; midpoint for ranges; excluding milk, energy and unselected sweetener"
+    },
+    {
+      "id": "F08",
+      "name": "Valor 0% reducido y Munné",
+      "status": "proposed",
+      "ingredients": [
+        {
+          "product_id": "P09",
+          "quantity": 250,
+          "unit": "ml",
+          "quantity_status": "habitual_milk_assumed_for_historical_runs"
+        },
+        {
+          "product_id": "P03",
+          "unit": "g",
+          "quantity": 40,
+          "reference_price_id": "PR03"
+        },
+        {
+          "product_id": "P05",
+          "unit": "g",
+          "quantity": 20,
+          "reference_price_id": "PR06"
+        },
+        {
+          "product_id": "P08",
+          "unit": "g",
+          "quantity": 5,
+          "reference_price_id": "PR09"
+        }
+      ],
+      "notes": "",
+      "historical_alias": null,
+      "cost_estimate_dop_excluding_milk": 78.31,
+      "cost_provisional": false,
+      "cost_includes_sweetener": false,
+      "cost_method": "historical_catalog_prices; midpoint for ranges; excluding milk, energy and unselected sweetener"
+    },
+    {
+      "id": "F09",
+      "name": "Optimización con Munné",
+      "status": "proposed",
+      "ingredients": [
+        {
+          "product_id": "P09",
+          "quantity": 250,
+          "unit": "ml",
+          "quantity_status": "habitual_milk_assumed_for_historical_runs"
+        },
+        {
+          "product_id": "P03",
+          "unit": "g",
+          "quantity": 30,
+          "reference_price_id": "PR03"
+        },
+        {
+          "product_id": "P05",
+          "unit": "g",
+          "quantity": 15,
+          "reference_price_id": "PR06"
+        },
+        {
+          "product_id": "P08",
+          "unit": "g",
+          "quantity": 8,
+          "reference_price_id": "PR09"
+        }
+      ],
+      "notes": "",
+      "historical_alias": null,
+      "cost_estimate_dop_excluding_milk": 60.13,
+      "cost_provisional": false,
+      "cost_includes_sweetener": false,
+      "cost_method": "historical_catalog_prices; midpoint for ranges; excluding milk, energy and unselected sweetener"
+    },
+    {
+      "id": "F10",
+      "name": "Valor 0% y Líder",
+      "status": "proposed",
+      "ingredients": [
+        {
+          "product_id": "P09",
+          "quantity": 250,
+          "unit": "ml",
+          "quantity_status": "habitual_milk_assumed_for_historical_runs"
+        },
+        {
+          "product_id": "P03",
+          "unit": "g",
+          "quantity": 50,
+          "reference_price_id": "PR03"
+        },
+        {
+          "product_id": "P07",
+          "unit": "g",
+          "quantity": 10,
+          "reference_price_id": "PR08"
+        }
+      ],
+      "notes": "",
+      "historical_alias": "Prueba A",
+      "cost_estimate_dop_excluding_milk": 72.98,
+      "cost_provisional": false,
+      "cost_includes_sweetener": false,
+      "cost_method": "historical_catalog_prices; midpoint for ranges; excluding milk, energy and unselected sweetener"
+    },
+    {
+      "id": "F11",
+      "name": "Reducción de Valor con Líder",
+      "status": "proposed",
+      "ingredients": [
+        {
+          "product_id": "P09",
+          "quantity": 250,
+          "unit": "ml",
+          "quantity_status": "habitual_milk_assumed_for_historical_runs"
+        },
+        {
+          "product_id": "P03",
+          "unit": "g",
+          "quantity": 40,
+          "reference_price_id": "PR03"
+        },
+        {
+          "product_id": "P07",
+          "unit": "g",
+          "quantity": 12,
+          "reference_price_id": "PR08"
+        },
+        {
+          "product_id": "P08",
+          "unit": "g",
+          "quantity": 3,
+          "reference_price_id": "PR09"
+        }
+      ],
+      "notes": "",
+      "historical_alias": "Prueba B",
+      "cost_estimate_dop_excluding_milk": 62.57,
+      "cost_provisional": false,
+      "cost_includes_sweetener": false,
+      "cost_method": "historical_catalog_prices; midpoint for ranges; excluding milk, energy and unselected sweetener"
+    },
+    {
+      "id": "F12",
+      "name": "Reducción avanzada de Valor",
+      "status": "proposed",
+      "ingredients": [
+        {
+          "product_id": "P09",
+          "quantity": 250,
+          "unit": "ml",
+          "quantity_status": "habitual_milk_assumed_for_historical_runs"
+        },
+        {
+          "product_id": "P03",
+          "unit": "g",
+          "quantity": 25,
+          "reference_price_id": "PR03"
+        },
+        {
+          "product_id": "P07",
+          "unit": "g",
+          "quantity": 15,
+          "reference_price_id": "PR08"
+        },
+        {
+          "product_id": "P08",
+          "unit": "g",
+          "quantity": 5,
+          "reference_price_id": "PR09"
+        }
+      ],
+      "notes": "Endulzante adicional por determinar",
+      "historical_alias": "Prueba C",
+      "cost_estimate_dop_excluding_milk": 46.12,
+      "cost_provisional": false,
+      "cost_includes_sweetener": false,
+      "cost_method": "historical_catalog_prices; midpoint for ranges; excluding milk, energy and unselected sweetener"
+    },
+    {
+      "id": "F13",
+      "name": "Formulación independiente",
+      "status": "proposed",
+      "ingredients": [
+        {
+          "product_id": "P09",
+          "quantity": 250,
+          "unit": "ml",
+          "quantity_status": "habitual_milk_assumed_for_historical_runs"
+        },
+        {
+          "product_id": "P07",
+          "unit": "g",
+          "quantity": 20,
+          "reference_price_id": "PR08"
+        },
+        {
+          "product_id": "P08",
+          "unit": "g",
+          "quantity": 8,
+          "reference_price_id": "PR09"
+        }
+      ],
+      "notes": "Endulzante por determinar; objetivo de bebida, no repostería.",
+      "historical_alias": "Prueba D",
+      "cost_estimate_dop_excluding_milk": 18.61,
+      "cost_provisional": false,
+      "cost_includes_sweetener": false,
+      "cost_method": "historical_catalog_prices; midpoint for ranges; excluding milk, energy and unselected sweetener"
+    },
+    {
+      "id": "F14",
+      "name": "Control F05 con canela",
+      "status": "tested_preliminary",
+      "ingredients": [
+        {
+          "product_id": "P09",
+          "quantity": 250,
+          "unit": "ml",
+          "quantity_status": "habitual_milk_assumed_for_historical_runs"
+        },
+        {
+          "product_id": "P03",
+          "unit": "g",
+          "quantity": 50,
+          "reference_price_id": "PR03"
+        },
+        {
+          "product_id": "P06",
+          "unit": "g",
+          "quantity": 10,
+          "reference_price_id": "PR07"
+        },
+        {
+          "product_id": "P10",
+          "unit": "g",
+          "quantity": 0.8,
+          "reference_price_id": "PR10"
+        }
+      ],
+      "notes": "Base exacta inferida de contexto, confirmar; intensidad de canela equivalente subjetivamente a la expectativa de 0.5 g.",
+      "historical_alias": "C01",
+      "cost_estimate_dop_excluding_milk": 87.66,
+      "cost_provisional": true,
+      "cost_includes_sweetener": false,
+      "cost_method": "historical_catalog_prices; midpoint for ranges; excluding milk, energy and unselected sweetener"
+    },
+    {
+      "id": "F15",
+      "name": "Control F05 con canela 0.5 g",
+      "status": "proposed",
+      "ingredients": [
+        {
+          "product_id": "P09",
+          "quantity": 250,
+          "unit": "ml",
+          "quantity_status": "habitual_milk_assumed_for_historical_runs"
+        },
+        {
+          "product_id": "P03",
+          "unit": "g",
+          "quantity": 50,
+          "reference_price_id": "PR03"
+        },
+        {
+          "product_id": "P06",
+          "unit": "g",
+          "quantity": 10,
+          "reference_price_id": "PR07"
+        },
+        {
+          "product_id": "P10",
+          "unit": "g",
+          "quantity": 0.5,
+          "reference_price_id": "PR10"
+        }
+      ],
+      "notes": "",
+      "historical_alias": "C02",
+      "cost_estimate_dop_excluding_milk": 87.34,
+      "cost_provisional": true,
+      "cost_includes_sweetener": false,
+      "cost_method": "historical_catalog_prices; midpoint for ranges; excluding milk, energy and unselected sweetener"
+    },
+    {
+      "id": "F16",
+      "name": "Control F05 con canela 0.3 g",
+      "status": "proposed",
+      "ingredients": [
+        {
+          "product_id": "P09",
+          "quantity": 250,
+          "unit": "ml",
+          "quantity_status": "habitual_milk_assumed_for_historical_runs"
+        },
+        {
+          "product_id": "P03",
+          "unit": "g",
+          "quantity": 50,
+          "reference_price_id": "PR03"
+        },
+        {
+          "product_id": "P06",
+          "unit": "g",
+          "quantity": 10,
+          "reference_price_id": "PR07"
+        },
+        {
+          "product_id": "P10",
+          "unit": "g",
+          "quantity": 0.3,
+          "reference_price_id": "PR10"
+        }
+      ],
+      "notes": "",
+      "historical_alias": "C03",
+      "cost_estimate_dop_excluding_milk": 87.13,
+      "cost_provisional": true,
+      "cost_includes_sweetener": false,
+      "cost_method": "historical_catalog_prices; midpoint for ranges; excluding milk, energy and unselected sweetener"
+    }
+  ],
+  "experiments": [
+    {
+      "id": "E01",
+      "formulation_id": "F01",
+      "performed_on": "2026-10-25",
+      "date_precision": "reported_on_not_exact_execution_date",
+      "status": "reported",
+      "observations": "60 g por 250 ml, espesor y sabor satisfactorios; referencia comercial de intensidad superior.",
+      "sensory_scores": null
+    },
+    {
+      "id": "E02",
+      "formulation_id": "F02",
+      "performed_on": "2026-10-25",
+      "date_precision": "reported_on_not_exact_execution_date",
+      "status": "reported",
+      "observations": "Una tableta insuficiente en intensidad.",
+      "sensory_scores": null
+    },
+    {
+      "id": "E03",
+      "formulation_id": "F03",
+      "performed_on": "2026-10-25",
+      "date_precision": "reported_on_not_exact_execution_date",
+      "status": "reported",
+      "observations": "Se usaron dos tabletas de 26 g y 8–10 g de fécula. No hay calificación de resultado final.",
+      "sensory_scores": null
+    },
+    {
+      "id": "E04",
+      "formulation_id": "F05",
+      "performed_on": "2026-11-26",
+      "date_precision": "reported_on_not_exact_execution_date",
+      "status": "reported",
+      "observations": "50 g Valor 0% + 10 g Chocolala en 250 ml: buen resultado, intensidad y espesor satisfactorios.",
+      "sensory_scores": null
+    },
+    {
+      "id": "E05",
+      "formulation_id": "F14",
+      "performed_on": "2026-11-26",
+      "date_precision": "reported_on_not_exact_execution_date",
+      "status": "reported",
+      "observations": "0.8 g de canela se perciben como la expectativa de 0.5 g; hacen falta más pruebas.",
+      "sensory_scores": null
+    },
+    {
+      "id": "E06",
+      "formulation_id": null,
+      "performed_on": "2026-11-26",
+      "date_precision": "reported_on_not_exact_execution_date",
+      "status": "reported_incomplete_recipe",
+      "observations": "Munné añadió amargor e intensidad al Valor anterior; usuario prefiere su aporte frente a Chocolala. Tipo de Valor y dosis exacta no confirmados.",
+      "sensory_scores": null,
+      "product_ids": [
+        "P05",
+        "P06",
+        "P02",
+        "P03"
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "K01",
+      "status": "observed",
+      "statement": "Valor Intenso es la referencia sensorial superior a las dos versiones de 200 g, pero no se encuentra habitualmente disponible.",
+      "experiment_ids": [
+        "E01"
+      ]
+    },
+    {
+      "id": "K02",
+      "status": "observed",
+      "statement": "50 g Valor 0% + 10 g Chocolala es la referencia actual satisfactoria; se usa Chocolala por inventario doméstico.",
+      "experiment_ids": [
+        "E04"
+      ]
+    },
+    {
+      "id": "K03",
+      "status": "observed",
+      "statement": "Munné es el potenciador preferido por intensidad y amargor; comparación no controlada.",
+      "experiment_ids": [
+        "E06"
+      ]
+    },
+    {
+      "id": "K04",
+      "status": "derived",
+      "statement": "Líder tiene menor costo por gramo en los precios históricos; no implica mejor calidad sensorial.",
+      "experiment_ids": []
+    },
+    {
+      "id": "K05",
+      "status": "observed",
+      "statement": "Parmalat semidescremada es la leche habitual; no sustituir por entera en cálculos.",
+      "experiment_ids": []
+    },
+    {
+      "id": "K06",
+      "status": "observed",
+      "statement": "0.8 g de canela produjo intensidad equivalente a la expectativa de 0.5 g; no establece dosis óptima.",
+      "experiment_ids": [
+        "E05"
+      ]
+    },
+    {
+      "id": "K07",
+      "status": "derived_conditional",
+      "statement": "Embajador: si la porción fuera 30 g, 52 g aportan 31.2 g de azúcar y 26 g aportan 15.6 g; verificar denominador.",
+      "experiment_ids": [
+        "E03"
+      ]
+    },
+    {
+      "id": "K08",
+      "status": "methodological",
+      "statement": "Costo de materia prima y calidad de bebida terminada son criterios distintos. Valor sigue siendo base por su sabor.",
+      "experiment_ids": []
+    }
+  ],
+  "hypotheses": [
+    {
+      "id": "H01",
+      "status": "pending",
+      "description": "Comparar 10 g de Líder, Munné y Chocolala en 50 g de Valor 0% manteniendo leche y proceso constantes.",
+      "formulation_ids": [
+        "F05",
+        "F07",
+        "F10"
+      ]
+    },
+    {
+      "id": "H02",
+      "status": "pending",
+      "description": "Reducir Valor progresivamente compensando cacao y almidón sin sacrificar sabor o dulzor.",
+      "formulation_ids": [
+        "F06",
+        "F08",
+        "F09",
+        "F11",
+        "F12"
+      ]
+    },
+    {
+      "id": "H03",
+      "status": "pending",
+      "description": "Desarrollar bebida espesa y agradable sin Valor mediante cacao amargo, maicena y endulzante controlado.",
+      "formulation_ids": [
+        "F13"
+      ]
+    },
+    {
+      "id": "H04",
+      "status": "pending",
+      "description": "Optimizar canela con 0.3, 0.5 y 0.8 g; mantener base constante.",
+      "formulation_ids": [
+        "F14",
+        "F15",
+        "F16"
+      ]
+    },
+    {
+      "id": "H05",
+      "status": "pending",
+      "description": "Verificar variedad de canela Líder y preferir Ceilán para consumo frecuente si corresponde.",
+      "formulation_ids": []
+    },
+    {
+      "id": "H06",
+      "status": "pending",
+      "description": "Verificar precios y etiquetas, especialmente leche Parmalat, peso Chocolala y porción Embajador.",
+      "formulation_ids": []
+    }
+  ],
+  "methodology": {
+    "design": "Comparación sensorial de un consumidor, sin medición instrumental ni repeticiones controladas. Cambiar una variable a la vez cuando sea posible.",
+    "preparation_reference": [
+      "Reservar aproximadamente 50 ml de leche fría si se usa fécula; disolverla.",
+      "Calentar el resto de leche a fuego medio-bajo; incorporar chocolate y cacao con batidor.",
+      "Agregar fécula disuelta si corresponde; remover hasta hervor suave y cocinar 2–3 minutos según receta.",
+      "Registrar temperatura, tiempo, marca/lote, cantidad y percepción."
+    ],
+    "sensory_dimensions": [
+      "intensidad_cacao",
+      "amargor",
+      "dulzor",
+      "espesor",
+      "cremosidad",
+      "persistencia",
+      "aroma_canela",
+      "satisfaccion_general"
+    ],
+    "scale": {
+      "status": "proposed_not_used",
+      "min": 1,
+      "max": 5,
+      "note": "Puntuar intensidad por dimensión y satisfacción por separado; no rellenar retrospectivamente. Antes se sugirió también escala 1–10, no adoptada."
+    },
+    "quality_index": {
+      "status": "proposed_not_adopted",
+      "weights_percent": {
+        "sabor": 35,
+        "precio": 25,
+        "textura": 20,
+        "nutricion": 15,
+        "disponibilidad": 5
+      }
+    }
+  },
+  "safety_notes": [
+    {
+      "topic": "alcalinización",
+      "statement": "No se considera motivo por sí solo para evitar cacao en cantidades alimentarias habituales; puede reducir flavanoles. No se conoce grado de alcalinización de Munné."
+    },
+    {
+      "topic": "cumarina",
+      "statement": "BfR: ingesta tolerable 0.1 mg/kg/día; Cassia promedio ~3 mg/g, variable. No se conoce especie ni concentración de Líder. No inferir seguridad individual."
+    },
+    {
+      "topic": "maltitol",
+      "statement": "Valor 0% contiene maltitol según registro previo; cantidad no conocida. Puede causar molestias gastrointestinales según dosis y tolerancia."
+    },
+    {
+      "topic": "caducidad",
+      "statement": "Verificar fecha de Chocolala antes de consumo; lectura previa de foto incierta."
+    }
+  ],
+  "sources": [
+    {
+      "id": "SRC01",
+      "type": "conversation",
+      "description": "Conversación experimental octubre–noviembre 2026; observaciones del usuario y transcripciones previas del asistente."
+    },
+    {
+      "id": "SRC02",
+      "type": "catalog",
+      "url": "https://supermercadosnacional.com/",
+      "description": "Precios históricos comunicados por asistente; no reconsultados durante exportación."
+    },
+    {
+      "id": "SRC03",
+      "type": "literature",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/18710243/",
+      "description": "Alcalinización y flavanoles; referencia previa no revalidada."
+    },
+    {
+      "id": "SRC04",
+      "type": "regulatory",
+      "url": "https://www.law.cornell.edu/cfr/text/21/184.1619",
+      "description": "Carbonato de potasio; referencia previa."
+    },
+    {
+      "id": "SRC05",
+      "type": "regulatory",
+      "url": "https://www.bfr.bund.de/en/service/frequently-asked-questions/topic/faq-on-coumarin-in-cinnamon-and-other-foods/",
+      "description": "Cumarina; referencia previa."
+    },
+    {
+      "id": "SRC06",
+      "type": "literature",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/21462332/",
+      "description": "Biodisponibilidad de cumarina; referencia previa."
+    },
+    {
+      "id": "SRC07",
+      "type": "report",
+      "filename": "Informe_chocolate_a_la_taza.pdf",
+      "description": "Informe histórico v1.0; no incluye todas las ampliaciones posteriores."
+    }
+  ],
+  "attachments": [
+    {
+      "filename": "image-1792961469228.jpg",
+      "kind": "original_photo",
+      "storage_path": null,
+      "status": "separate_file_not_embedded"
+    },
+    {
+      "filename": "image-1792963521690.jpg",
+      "kind": "original_photo",
+      "storage_path": null,
+      "status": "separate_file_not_embedded"
+    },
+    {
+      "filename": "image-1792963596182.jpg",
+      "kind": "original_photo",
+      "storage_path": null,
+      "status": "separate_file_not_embedded"
+    },
+    {
+      "filename": "image-1792963877953.jpg",
+      "kind": "original_photo",
+      "storage_path": null,
+      "status": "separate_file_not_embedded"
+    },
+    {
+      "filename": "image-1792963885634.jpg",
+      "kind": "original_photo",
+      "storage_path": null,
+      "status": "separate_file_not_embedded"
+    },
+    {
+      "filename": "image-1792963921576.jpg",
+      "kind": "original_photo",
+      "storage_path": null,
+      "status": "separate_file_not_embedded"
+    },
+    {
+      "filename": "image-1792963934957.jpg",
+      "kind": "original_photo",
+      "storage_path": null,
+      "status": "separate_file_not_embedded"
+    },
+    {
+      "filename": "image-1792964120113.jpg",
+      "kind": "original_photo",
+      "storage_path": null,
+      "status": "separate_file_not_embedded"
+    },
+    {
+      "filename": "image-1792964154965.jpg",
+      "kind": "original_photo",
+      "storage_path": null,
+      "status": "separate_file_not_embedded"
+    },
+    {
+      "filename": "image-1795730518534.jpg",
+      "kind": "original_photo",
+      "storage_path": null,
+      "status": "separate_file_not_embedded"
+    },
+    {
+      "filename": "image-1795730532895.jpg",
+      "kind": "original_photo",
+      "storage_path": null,
+      "status": "separate_file_not_embedded"
+    },
+    {
+      "filename": "image-1795730541657.jpg",
+      "kind": "original_photo",
+      "storage_path": null,
+      "status": "separate_file_not_embedded"
+    },
+    {
+      "filename": "image-1795730656663.jpg",
+      "kind": "original_photo",
+      "storage_path": null,
+      "status": "separate_file_not_embedded"
+    },
+    {
+      "filename": "image-1795733400236.jpg",
+      "kind": "original_photo",
+      "storage_path": null,
+      "status": "separate_file_not_embedded"
+    },
+    {
+      "filename": "image-1795734650798.jpg",
+      "kind": "original_photo",
+      "storage_path": null,
+      "status": "separate_file_not_embedded"
+    }
+  ],
+  "limitations": [
+    "No se revalidaron etiquetas ni precios en esta exportación; datos de conversación con incertidumbres explícitas.",
+    "Precios de catálogo no son facturas de compra.",
+    "Precio de Parmalat desconocido: costo total por taza no calculable con precisión.",
+    "No imputar valores nutricionales nulos como cero ni convertir límite superior en valor exacto.",
+    "No inferir porcentajes de cacao no declarados; equivalencias de cacao en polvo son hipótesis.",
+    "F02 cantidad de fécula desconocida; F14 base exacta inferida; E06 receta incompleta.",
+    "Los costos de formulaciones se recalcularon desde precios unitarios históricos, sin redondeo intermedio; pueden diferir de tablas anteriores.",
+    "Las fotografías se enumeran por nombre; no se incluyen bytes ni se han subido a Storage."
+  ],
+  "import_contract": {
+    "strategy": "Mapear al esquema existente; IDs externos estables, no UUID de base de datos. Validar referencias y unidades antes de escribir. Ejecutar en una sola transacción; rollback completo si falla.",
+    "order": [
+      "project",
+      "suppliers",
+      "products",
+      "product_prices",
+      "formulations",
+      "experiments",
+      "findings",
+      "hypotheses",
+      "sources",
+      "attachments"
+    ],
+    "idempotency": "Upsert por identificador externo + proyecto; no duplicar registros; mantener historial de precios y resultados; no sobrescribir datos de mayor calidad sin revisión.",
+    "null_policy": "null significa desconocido; conservar intervalos y límites; no transformar en cero.",
+    "schema_mapping_required": true,
+    "storage_note": "Subida de archivos a Supabase Storage es operación separada de la transacción SQL; importar metadatos con estado pendiente.",
+    "security": "Usar credenciales del servidor y políticas de acceso apropiadas; no incluir secretos en JSON.",
+    "validation": "No marcar propuestas como realizadas. Revisar discrepancias antes de sustituir datos existentes."
+  }
+}
