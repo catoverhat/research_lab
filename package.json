@@ -8,6 +8,7 @@
     "build": "next build",
     "start": "next start",
     "test": "node --import ./test-hooks.mjs --test \"src/**/*.test.ts\"",
+    "test:e2e": "node e2e/smoke.mjs",
     "typecheck": "tsc --noEmit",
     "supabase:start": "supabase start",
     "supabase:stop": "supabase stop",
@@ -26,6 +27,7 @@
     "@types/node": "^24.19.4",
     "@types/react": "19.3.3",
     "@types/react-dom": "^19.3.0",
+    "puppeteer-core": "^25.19.0",
     "supabase": "3.4.0",
     "tailwindcss": "4.3.5",
     "typescript": "^7.0.2"

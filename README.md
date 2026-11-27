@@ -28,4 +28,15 @@ pnpm supabase:stop
 3. El registro está desactivado. Crea un usuario con la API de administración local o desde Studio (`http://127.0.0.1:54323`, Authentication), con el email confirmado.
 4. Abre `http://localhost:3000`, no `127.0.0.1`: las passkeys necesitan un dominio.
 
+### Prueba de punta a punta
+
+`pnpm test:e2e` usa la app como una persona, en un Chrome o Edge sin ventana y con un autenticador de passkeys virtual. Prueba el login, los productos y precios, las versiones de receta, los experimentos y las passkeys, y deja los datos como estaban. La única excepción es una fuente comercial de prueba (`example.com`) por cada ejecución.
+
+Necesita:
+- el stack local con los datos del chocolate importados (`research/chocolate/import.mjs`), porque usa un experimento realizado;
+- el usuario local `local@research-lab.test` con la contraseña `local-dev-password`, u otro indicado con `E2E_EMAIL` y `E2E_PASSWORD`;
+- la app compilada y en marcha: `pnpm build` y luego `pnpm start`.
+
+Busca el navegador en las rutas habituales; si no lo encuentra, indícalo con `E2E_BROWSER`.
+
 Despliegue y reglas: [AGENTS.md](AGENTS.md). Modelo de datos: [docs/database-design.md](docs/database-design.md).
