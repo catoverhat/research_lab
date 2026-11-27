@@ -46,7 +46,7 @@ Antes de cambiar algo de Supabase, consulta la documentación oficial: https://s
   6. `pnpm supabase:db:push:dry-run`
   7. Aprobación explícita del usuario
   8. `pnpm exec supabase db push --remote` (a propósito, no tiene alias). Sin terminal interactiva, el CLI exige `--yes`; úsalo solo después del paso 7.
-  9. `pnpm supabase:migrations:list` y `pnpm supabase:types:remote`
+  9. `pnpm supabase:migrations:list` y `pnpm supabase:types:remote`. El generador remoto es de otra versión: cambia el formato, añade `__InternalSupabase` y marca nullable todas las columnas de las vistas. Si las tablas coinciden, vuelve a los tipos locales con `git checkout -- src/shared/database/database.types.ts`.
 - Prohibido salvo que el usuario lo pida: `db reset --remote`, `db push --include-seed`, `migration repair`.
 - No hagas commit de `supabase/.temp/`, `supabase/.branches/`, `.env*`, claves ni volcados de datos reales.
 
