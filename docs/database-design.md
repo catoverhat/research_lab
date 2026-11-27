@@ -21,6 +21,7 @@ erDiagram
   FORMULATIONS ||--o{ EXPERIMENTS : se_ejecuta_en
   HYPOTHESES ||--o{ EXPERIMENTS : pone_a_prueba
   EXPERIMENTS ||--o{ SENSORY_EVALUATIONS : mide
+  EXPERIMENTS ||--o{ EXPERIMENTS : se_compara_con
   HYPOTHESES ||--o{ FINDINGS : respalda
   EXPERIMENTS ||--o{ FINDINGS : evidencia
   SOURCES ||--o{ FINDINGS : sustenta
@@ -50,6 +51,8 @@ Todas las tablas tienen además `owner_id → auth.users` (omitido en el diagram
 | 12 | Un trigger impide que un experimento `completed` o `failed` vuelva a `planned` o `cancelled`, o cambie de receta. Borrarlo sigue permitido. | Volver atrás descongelaría su receta sin aviso. Borrar es la forma explícita de deshacerlo (confirmado por el usuario el 2026-11-27). |
 | 13 | Un trigger impide cambiar `package_size` o `unit` de un producto con precios o en recetas. | Los precios son por envase y las cantidades van en su unidad: cambiarlos reescribiría el coste histórico y el sentido de las recetas. Otra presentación es otro producto. |
 | 14 | Las operaciones de varios pasos son funciones SQL (`security invoker`): `create_formulation_version` (copia receta y composición a la versión siguiente) y `add_product_price` (precio, proveedor por nombre y fuente comercial). | Una transacción por operación: un fallo a mitad no deja nada a medias. Corren con el RLS de quien llama. |
+| 15 | `experiments.baseline_experiment_id` ("Comparar con") es el experimento contra el que se compara este: su control o referencia. Es opcional, no puede ser él mismo y queda en `null` si se borra la referencia. | Un control elegido a propósito: no siempre es la versión anterior; puede ser la mejor receta hasta ahora (decidido por el usuario el 2026-11-27). |
+| 16 | Un trigger impide registrar evaluaciones sensoriales en un experimento que no esté `completed` o `failed`. | Una nota es un resultado: un experimento planificado o cancelado no tiene resultados. |
 
 ## Vistas (todas `security_invoker = true`, así respetan el RLS de quien consulta)
 
@@ -59,7 +62,8 @@ Todas las tablas tienen además `owner_id → auth.users` (omitido en el diagram
 | `v_product_unit_cost` | Último precio y `unit_cost` por producto |
 | `v_formulation_cost` | Coste de un lote y por ración a precios actuales, y `ingredients_without_price` |
 | `v_formulation_nutrition` | Nutrición por ración (del lote completo si `servings` es null), y `ingredients_without_nutrition` |
-| `v_experiment_summary` | Experimento con su coste a precios de su fecha, número de evaluaciones y `overall_score` |
+| `v_experiment_summary` | Experimento con su coste a precios de su fecha (del lote y por ración), número de evaluaciones, `overall_score` y su referencia (`baseline_experiment_id`) |
+| `v_experiment_sensory` | Por experimento y atributo: número de evaluaciones, media, mínimo, máximo y desviación típica muestral (`null` con una sola evaluación) |
 | `v_sensory_comparison` | Media por formulación y atributo, solo de experimentos `completed` |
 | `v_research_context` | Un JSON por proyecto con todo lo necesario para retomar la investigación |
 
@@ -88,6 +92,7 @@ El JSON incluye: el proyecto, las hipótesis, los hallazgos, las formulaciones (
 - Los tests están en `supabase/tests/`:
   - `research_core.sql` prueba accesos permitidos y denegados (otro usuario, `anon` y Storage), el bloqueo de formulaciones, los cálculos de las vistas y el borrado de un usuario.
   - `domain_rules.sql` prueba las decisiones 12 a 14, el check de moneda y que los borrados en cascada siguen funcionando.
+  - `experiment_report.sql` prueba las decisiones 15 y 16, las estadísticas de `v_experiment_sensory` y el coste por ración.
 
 ## Importación de los datos históricos (fase 2)
 

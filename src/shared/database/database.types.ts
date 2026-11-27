@@ -57,17 +57,29 @@ isOneToOne: false
                   ]
                 },"experiments": {
                   Row: {
-                    "conditions": string | null,"created_at": string,"formulation_id": string,"hypothesis_id": string | null,"id": string,"observations": string | null,"owner_id": string,"performed_on": string | null,"status": string
+                    "baseline_experiment_id": string | null,"conditions": string | null,"created_at": string,"formulation_id": string,"hypothesis_id": string | null,"id": string,"observations": string | null,"owner_id": string,"performed_on": string | null,"status": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "conditions"?: string | null,"created_at"?: string,"formulation_id": string,"hypothesis_id"?: string | null,"id"?: string,"observations"?: string | null,"owner_id"?: string,"performed_on"?: string | null,"status"?: string
+                    "baseline_experiment_id"?: string | null,"conditions"?: string | null,"created_at"?: string,"formulation_id": string,"hypothesis_id"?: string | null,"id"?: string,"observations"?: string | null,"owner_id"?: string,"performed_on"?: string | null,"status"?: string
                   }
                   Update: {
-                    "conditions"?: string | null,"created_at"?: string,"formulation_id"?: string,"hypothesis_id"?: string | null,"id"?: string,"observations"?: string | null,"owner_id"?: string,"performed_on"?: string | null,"status"?: string
+                    "baseline_experiment_id"?: string | null,"conditions"?: string | null,"created_at"?: string,"formulation_id"?: string,"hypothesis_id"?: string | null,"id"?: string,"observations"?: string | null,"owner_id"?: string,"performed_on"?: string | null,"status"?: string
                   }
                   Relationships: [
                     {
+      foreignKeyName: "experiments_baseline_experiment_id_fkey"
+      columns: ["baseline_experiment_id"]
+isOneToOne: false
+      referencedRelation: "experiments"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "experiments_baseline_experiment_id_fkey"
+      columns: ["baseline_experiment_id"]
+isOneToOne: false
+      referencedRelation: "v_experiment_summary"
+      referencedColumns: ["experiment_id"]
+    },{
       foreignKeyName: "experiments_formulation_id_fkey"
       columns: ["formulation_id"]
 isOneToOne: false
@@ -470,13 +482,45 @@ isOneToOne: false
                 }
           }
           Views: {
-            "v_experiment_summary": {
+            "v_experiment_sensory": {
                   Row: {
-                    "code": string,"conditions": string | null,"evaluations": number | null,"experiment_id": string,"formulation_id": string,"hypothesis_id": string | null,"ingredients_without_price": number | null,"observations": string | null,"overall_score": number | null,"performed_on": string | null,"project_id": string,"status": string,"total_cost": number | null,"version": number
+                    "attribute": string,"avg_score": number | null,"evaluations": number | null,"experiment_id": string,"max_score": number | null,"min_score": number | null,"stddev_score": number | null
                   }
                   ComputedFields: never
                   Relationships: [
                     {
+      foreignKeyName: "sensory_evaluations_experiment_id_fkey"
+      columns: ["experiment_id"]
+isOneToOne: false
+      referencedRelation: "experiments"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "sensory_evaluations_experiment_id_fkey"
+      columns: ["experiment_id"]
+isOneToOne: false
+      referencedRelation: "v_experiment_summary"
+      referencedColumns: ["experiment_id"]
+    }
+                  ]
+                },"v_experiment_summary": {
+                  Row: {
+                    "baseline_experiment_id": string | null,"code": string,"conditions": string | null,"cost_per_serving": number | null,"evaluations": number | null,"experiment_id": string,"formulation_id": string,"hypothesis_id": string | null,"ingredients_without_price": number | null,"observations": string | null,"overall_score": number | null,"performed_on": string | null,"project_id": string,"servings": number | null,"status": string,"total_cost": number | null,"version": number
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    {
+      foreignKeyName: "experiments_baseline_experiment_id_fkey"
+      columns: ["baseline_experiment_id"]
+isOneToOne: false
+      referencedRelation: "experiments"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "experiments_baseline_experiment_id_fkey"
+      columns: ["baseline_experiment_id"]
+isOneToOne: false
+      referencedRelation: "v_experiment_summary"
+      referencedColumns: ["experiment_id"]
+    },{
       foreignKeyName: "experiments_formulation_id_fkey"
       columns: ["formulation_id"]
 isOneToOne: false
