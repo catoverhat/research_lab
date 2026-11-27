@@ -22,7 +22,8 @@
 Hecho y probado en local, con los datos del chocolate importados:
 - Login con email y contraseña o con passkey, protegido con Turnstile. Gestión de passkeys en `/account`.
 - Proyectos (lista, alta, edición), productos (alta, edición, borrado), precios (solo añadir, con proveedor y URL de la fuente), formulaciones (ingredientes, coste, nutrición, congelación y versión nueva) y experimentos (alta, edición, borrado).
-- Prueba de punta a punta en Edge headless, con un autenticador WebAuthn virtual. No está en el repo porque depende de puppeteer-core.
+- Prueba de punta a punta (`pnpm test:e2e`, en `e2e/smoke.mjs`) en Edge sin ventana, con un autenticador WebAuthn virtual.
+- Revisión con los agentes `nextjs-reviewer` y `ui-ux-reviewer`, y sus hallazgos aplicados. Las reglas que protegen datos pasaron a la base (migración `20261127162447_domain_rules_in_database`, aplicada en local y pendiente de subir a hosted con aprobación).
 
 Pendiente:
 - **Antes de publicar** (en el dashboard del proyecto hosted, con aprobación): desactivar el registro y el login anónimo, activar las passkeys con el dominio de producción como RP ID y origen, y activar Turnstile con la clave secreta real.
