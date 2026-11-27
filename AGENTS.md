@@ -9,6 +9,18 @@ Lee antes de trabajar:
 - [docs/architecture.md](docs/architecture.md)
 - [docs/database-design.md](docs/database-design.md) (obligatorio antes de tocar el esquema)
 - [docs/implementation-plan.md](docs/implementation-plan.md) (fase actual)
+- [docs/glossary.md](docs/glossary.md): los términos del dominio. Úsalos igual en la UI, el código y los documentos.
+
+## Forma de trabajar
+
+Principios tomados de [ub-mode](https://github.com/unclebob/ub-mode) que este proyecto aplica:
+- Una regla vive en un solo sitio. Si protege los datos, ese sitio es la base (check, trigger o función), y la app solo la muestra.
+- Que lo ilegal no se pueda escribir: modela el dominio con restricciones, no con avisos.
+- Una operación de varios pasos va en una sola transacción (una función SQL), para que un fallo a mitad no deje nada a medias.
+- Para una regla nueva de la base, escribe antes el test pgTAP y míralo fallar por la razón esperada.
+- Prueba el comportamiento que ve la persona usuaria, no la implementación.
+- Arregla la causa, no el síntoma.
+- Cada commit dice por qué, qué cambió y cómo se comprobó (una línea `Verificado:` con los tests y comprobaciones que se ejecutaron).
 
 ## Alcance actual
 
