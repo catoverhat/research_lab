@@ -109,6 +109,7 @@ Lo que hacen las herramientas y no se espera: no son fallos del código del proy
 
 - Git Bash convierte en ruta de Windows cualquier argumento que empiece por `/`: `curl -w "/login"` imprime `C:/Program Files/Git/login`. Evita empezar así o usa `MSYS_NO_PATHCONV=1`.
 - PowerShell 5.1 parte los argumentos con comillas de los programas nativos: un `git commit -m` de varias líneas falla. Escribe el mensaje en un archivo y usa `git commit -F <archivo>`.
+- Parar `pnpm start` matando solo el proceso de pnpm deja vivo `next start` en el puerto 3000: el siguiente `pnpm start` falla con `EADDRINUSE` y la e2e prueba la compilación anterior. Para el proceso que escucha en el 3000 (`Get-NetTCPConnection -LocalPort 3000 -State Listen`, luego `Stop-Process` con su `OwningProcess`).
 - Con `core.autocrlf=true`, Git convierte a CRLF al hacer checkout. El SHA-256 de un archivo clonado no coincide con el publicado: calcúlalo sobre `git show HEAD:<ruta>`.
 
 ### PostgreSQL
