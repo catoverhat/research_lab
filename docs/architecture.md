@@ -10,7 +10,12 @@ flowchart LR
 ```
 
 - **Supabase es la fuente central.** Guarda los datos estructurados, las fotos y etiquetas (Storage) y los usuarios (Auth). Los cálculos viven en vistas SQL.
-- **Next.js (fase 3 en adelante, última versión estable).** App Router, TypeScript y Tailwind. Los formularios son nativos con Server Actions, y Zod valida en el servidor. shadcn/ui y React Hook Form se añaden cuando un componente los necesite (diálogos, combobox), y Recharts en la fase 4. Tipos generados en `src/shared/database/database.types.ts`.
+- **Next.js (fase 3 en adelante, última versión estable).** App Router, TypeScript y Tailwind. Los formularios son nativos con Server Actions, y Zod valida en el servidor. shadcn/ui y React Hook Form se añaden cuando un componente los necesite (diálogos, combobox). Tipos generados en `src/shared/database/database.types.ts`.
+- **Gráficas (fase 4)**, en `src/shared/charts/`, siguiendo la skill de visualización de datos:
+  - Recharts para las interactivas: líneas en el tiempo y barras agrupadas, con detalle al pasar el cursor y con teclado.
+  - SVG propio, renderizado en el servidor, para la escala de puntos del informe (media, rango y mancuerna frente a la referencia), porque se imprime tal cual.
+  - Paleta en `palette.ts`, validada con el script de la skill.
+  - Cada gráfica va con su tabla, nunca con dos ejes y con un máximo de 4 series.
 - **IA (fase 5).** Se empieza por lo más simple: exportar el JSON de `v_research_context` y adjuntarlo a la conversación. Después, si hace falta, el servidor MCP oficial de Supabase en modo solo lectura y limitado al proyecto: `https://mcp.supabase.com/mcp?project_ref=<ref>&read_only=true&features=database`.
 
 No hacen falta pgvector ni RAG: los datos son estructurados y SQL los compara con precisión.

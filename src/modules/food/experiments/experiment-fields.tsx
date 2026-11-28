@@ -6,15 +6,22 @@ import { experimentStatus, isRecorded, recordedStatus } from "./schema";
 type Formulation = { id: string; code: string; version: number; name: string | null };
 type Hypothesis = { id: string; statement: string };
 
-/** The recipe is chosen once: moving a run to another recipe would rewrite its history. */
+/**
+ * The recipe is chosen once: moving a run to another recipe would rewrite its history.
+ * `references` (edit only) are the runs it can be compared with; `suggestion` is a hint, never preselected.
+ */
 export function ExperimentFields({
   experiment,
   formulations,
   hypotheses,
+  references,
+  suggestion,
 }: {
   experiment?: Tables<"experiments">;
   formulations?: Formulation[];
   hypotheses: Hypothesis[];
+  references?: { id: string; label: string }[];
+  suggestion?: string;
 }) {
   return (
     <>
@@ -43,6 +50,22 @@ export function ExperimentFields({
           ))}
         </select>
       </Field>
+      {references && (
+        <Field
+          label="Comparar con (referencia)"
+          name="baseline_experiment_id"
+          hint={suggestion ? `Sugerencia: ${suggestion}.` : "El control contra el que se leen los resultados."}
+        >
+          <select name="baseline_experiment_id" defaultValue={experiment?.baseline_experiment_id ?? ""}>
+            <option value="">Sin referencia</option>
+            {references.map((r) => (
+              <option key={r.id} value={r.id}>
+                {r.label}
+              </option>
+            ))}
+          </select>
+        </Field>
+      )}
       <Field label="Estado" name="status">
         <select name="status" defaultValue={experiment?.status ?? "planned"}>
           <Options labels={experiment && isRecorded(experiment.status) ? recordedStatus : experimentStatus} />

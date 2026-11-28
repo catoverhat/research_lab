@@ -1,6 +1,16 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { dash, date, missing, money, productLabel, unitLabel } from "./format.ts";
+import { dash, date, missing, money, percent, productLabel, signed, unitLabel } from "./format.ts";
+
+test("differences carry their sign; unknown stays a dash", () => {
+  assert.equal(signed(1.5), "+1.5");
+  assert.equal(signed(-0.5), "−0.5");
+  assert.equal(signed(0), "0");
+  assert.equal(signed(null), dash);
+  assert.equal(percent(0.25), "+25%");
+  assert.equal(percent(-0.1), "−10%");
+  assert.equal(percent(null), dash);
+});
 
 test("stored days show as dd/mm/yyyy, whatever the server's time zone", () => {
   assert.equal(date("2026-11-27"), "27/11/2026");

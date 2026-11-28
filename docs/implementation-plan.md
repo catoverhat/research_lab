@@ -5,7 +5,8 @@
 | 1 | Modelo de datos, RLS, vistas, exportación JSON, keepalive, documentación | Desplegado en el proyecto hosted `rbdkuhjzkngjppqseyak` (us-east-1, Postgres 17). Keepalive verificado |
 | 2 | Importar la investigación del chocolate (JSON de ChatGPT → script en una transacción) | Hecho el 2026-11-27: importado en hosted (16 recetas, 5 experimentos, 11 precios verificados) y etiquetas cargadas (13 de 16 recetas con nutrición). Falta la porción de Embajador (F02–F04) |
 | 3 | Next.js organizado por núcleo común y módulos (ver `architecture.md`): auth (Turnstile antes de publicar; passkeys, comprobando qué ofrece Supabase Auth en el plan Free) y CRUD de productos, precios, formulaciones y experimentos | Desplegado el 2026-11-27 en `https://research-lab-catoverhat.vercel.app` (ver "Estado de la fase 3") |
-| 4 | Dashboard económico y sensorial (Recharts sobre las vistas) | Pendiente |
+| 4 | Experimentación y análisis (redefinida el 2026-11-27): captura de evaluaciones sensoriales y conclusiones, informe profesional de cada experimento con referencia ("Comparar con"), comparador de experimentos y gráficas (sensorial, precios) | Hecho en local el 2026-11-27; falta subirlo a hosted y publicarlo |
+| 4b | Rediseño visual: kit de texto para Google Stitch (plataforma genérica, sin datos reales), `DESIGN.md` y aplicarlo | Después de validar la fase 4 |
 | 5 | Integración con IA (exportación JSON y luego MCP de solo lectura) | Pendiente |
 | 6 | Informes PDF a partir de `research_reports` | Pendiente |
 | 7 | Optimización y comparación de formulaciones | Pendiente |

@@ -61,6 +61,10 @@ export function dbError(error: { code?: string; message: string }): NonNullable<
         };
       if (error.message.includes("product_prices_currency_dop"))
         return { error: "Por ahora los precios solo se registran en DOP." };
+      if (error.message.includes("sensory evaluations need"))
+        return { error: "Solo se evalúa un experimento realizado o fallido: márcalo así y pon su fecha antes." };
+      if (error.message.includes("experiments_baseline_not_self"))
+        return { error: "Un experimento no puede compararse consigo mismo." };
       return { error: "Algún valor no cumple las reglas de la base de datos." };
     case "P0002":
       return { error: "El registro ya no existe o no es tuyo." };

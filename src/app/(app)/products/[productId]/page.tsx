@@ -2,6 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { addPrice, deleteProduct, updateProduct } from "@/core/products/actions";
 import { ProductFields } from "@/core/products/product-fields";
+import { hasTrend, priceSeries } from "@/core/products/price-series";
+import { TimeLine } from "@/shared/charts/time-line";
 import { productInUse } from "@/core/products/schema";
 import { dash, date, money, productLabel, text, today, unitLabel } from "@/shared/format";
 import { must, requireUser } from "@/shared/supabase/server";
@@ -37,6 +39,7 @@ export default async function ProductPage({ params }: { params: Promise<{ produc
   const prices = must(history);
   const extrasById = new Map(must(extras).map((e) => [e.id, e]));
   const latest = prices[0];
+  const series = priceSeries(prices);
 
   return (
     <>
@@ -47,6 +50,13 @@ export default async function ProductPage({ params }: { params: Promise<{ produc
 
       <section className="card">
         <h2>Precios</h2>
+        {hasTrend(series) && (
+          <TimeLine
+            caption={`Precio del envase en el tiempo${series.length > 1 ? ", por proveedor" : ""} (el último de cada día)`}
+            unit="money"
+            series={series}
+          />
+        )}
         {prices.length === 0 ? (
           <p className="muted">Sin precios registrados.</p>
         ) : (

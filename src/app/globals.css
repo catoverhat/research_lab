@@ -81,3 +81,30 @@
     @apply border-t border-stone-200 pt-4;
   }
 }
+
+/* Reports print as documents: no navigation, forms or capture blocks. A long section may span
+   pages, but a heading stays with what follows and a figure or table row is never cut. */
+@media print {
+  body {
+    @apply bg-white;
+  }
+  header:has(nav),
+  .no-print,
+  a[href="#main"] {
+    display: none !important;
+  }
+  .report-section {
+    @apply border-stone-300;
+  }
+  h2,
+  h3 {
+    break-after: avoid;
+  }
+  figure,
+  tr {
+    break-inside: avoid;
+  }
+  a {
+    @apply text-stone-900 no-underline;
+  }
+}

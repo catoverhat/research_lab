@@ -28,7 +28,10 @@ const performedHasDate = (d: { status: string; performed_on: string | null }) =>
   d.status === "planned" || d.status === "cancelled" || d.performed_on !== null;
 const performedHasDateError = { message: "Un experimento realizado o fallido necesita fecha.", path: ["performed_on"] };
 
-export const experimentSchema = base.refine(performedHasDate, performedHasDateError);
+// "Comparar con" is chosen when editing, once the other runs exist (the database rejects itself).
+export const experimentSchema = base
+  .extend({ baseline_experiment_id: optionalId })
+  .refine(performedHasDate, performedHasDateError);
 export const newExperimentSchema = base
   .extend({ formulation_id: requiredId })
   .refine(performedHasDate, performedHasDateError);

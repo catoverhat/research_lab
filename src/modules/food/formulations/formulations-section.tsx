@@ -34,7 +34,7 @@ export async function FormulationsSection({ supabase, projectId }: { supabase: C
   const costById = new Map(must(costs).map((c) => [c.formulation_id, c]));
 
   return (
-    <section className="card">
+    <section id="recetas" className="card">
       <h2>Recetas</h2>
       {recipes.length === 0 ? (
         <p className="muted">Aún no hay recetas.</p>

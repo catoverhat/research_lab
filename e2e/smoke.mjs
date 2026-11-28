@@ -63,6 +63,9 @@ await cdp.send("WebAuthn.addVirtualAuthenticator", {
 });
 
 const step = (name) => console.log(`- ${name}`);
+// E2E_SCREENSHOTS=<dir> saves full-page screenshots of the report, comparator and price chart.
+const screenshot = async (name) =>
+  process.env.E2E_SCREENSHOTS && page.screenshot({ path: join(process.env.E2E_SCREENSHOTS, `${name}.png`), fullPage: true });
 const text = () => page.evaluate(() => document.body.innerText);
 const waitText = (t, timeout = 15000) =>
   page.waitForFunction((t) => document.body.innerText.includes(t), { timeout }, t);
@@ -83,12 +86,13 @@ async function fill(scope, values) {
     }
   }
 }
+// Opens a <details> by its summary text; leaves it open if it already is (a click would close it).
 async function openDetails(summaryText) {
   const handle = await page.evaluateHandle(
     (t) => [...document.querySelectorAll("summary")].find((s) => s.textContent.includes(t)),
     summaryText,
   );
-  await handle.click();
+  if (!(await handle.evaluate((s) => s.parentElement.open))) await handle.click();
 }
 async function clickButton(label) {
   const handle = await page.evaluateHandle(
@@ -157,6 +161,8 @@ await waitText("Ya existe un registro con esos datos.");
 step("add a price with a new supplier and source URL");
 await page.goto(productUrl, { waitUntil: "networkidle0" });
 await fill("section form", { price: "125.50", supplier: "Super Smoke", source_url: "https://example.com/azucar", notes: "Observación: smoke test" });
+// An earlier day, so the second price (today) makes a trend for the chart.
+await page.$eval('section form [name="observed_on"]', (e) => (e.value = "2026-11-20"));
 await clickButton("Añadir precio");
 await waitText("Super Smoke");
 assert.match(await text(), /RD\$\s?125[.,]50/);
@@ -173,6 +179,8 @@ await page.waitForFunction((n) => document.querySelectorAll("section tbody tr").
 await new Promise((r) => setTimeout(r, 2500));
 await page.reload({ waitUntil: "networkidle0" });
 assert.equal(await page.$$eval("section tbody tr", (r) => r.length), rowsBefore + 1, "exactly one new price");
+await page.waitForSelector("section .recharts-surface", { timeout: 10000 });
+await screenshot("product-price-history");
 
 step("edit product notes");
 await openDetails("Editar producto");
@@ -201,14 +209,14 @@ step("project page lists formulations and experiments");
 await page.goto(BASE, { waitUntil: "networkidle0" });
 await nav(() => page.click('tbody a[href^="/projects/"]'));
 const projectUrl = page.url();
-const [recipeRows, experimentRows] = await page.$$eval("section", (s) =>
-  s.map((x) => x.querySelectorAll("tbody tr").length),
-);
+const recipeRows = await page.$$eval("#recetas tbody tr", (r) => r.length);
+const experimentRows = await page.$$eval("#experimentos tbody tr", (r) => r.length);
 assert.ok(recipeRows > 0 && experimentRows > 0, "the project lists its recipes and experiments");
+await waitText("Hipótesis y conclusiones");
 
 step("tested recipe is frozen; create a new version");
 const completedExperiment = await page.evaluate(() =>
-  [...document.querySelectorAll("section:nth-of-type(2) tbody tr")]
+  [...document.querySelectorAll("#experimentos tbody tr")]
     .find((r) => r.innerText.includes("Realizado"))
     ?.querySelector("a")?.getAttribute("href"),
 );
@@ -293,31 +301,125 @@ step("create an experiment; completed needs a date; then the recipe freezes");
 await page.goto(projectUrl, { waitUntil: "networkidle0" });
 await openDetails("Nuevo experimento");
 const newVersionId = newVersionUrl.split("/").at(-1);
-await page.select('details [name="formulation_id"]', newVersionId);
-await fill("section:nth-of-type(2) details form", { status: "completed", conditions: "Smoke" });
+await page.select('#experimentos details [name="formulation_id"]', newVersionId);
+await fill("#experimentos details form", { status: "completed", conditions: "Smoke" });
 await clickButton("Crear experimento");
 await waitText("Un experimento realizado o fallido necesita fecha.");
-await fill("section:nth-of-type(2) details form", { status: "planned" });
+await fill("#experimentos details form", { status: "planned" });
 await nav(() => clickButton("Crear experimento"));
 assert.match(new URL(page.url()).pathname, /\/experiments\//);
-await waitText("Planificado");
-await page.$eval('[name="performed_on"]', (e) => (e.value = "2026-11-27"));
-await fill("section form", { status: "completed" });
-await clickButton("Guardar");
-await waitText("Realizado");
+const experimentUrl = page.url();
+const experimentId = experimentUrl.split("/").at(-1);
+await waitText("Registrar datos");
+await waitText("La evaluación sensorial se registra cuando el experimento está realizado");
+const editForm = "#capture-edit form";
+const saveEdit = () => post(() => page.click(`${editForm} button[type=submit]`));
+await openDetails("Editar datos del experimento");
+await page.$eval(`${editForm} [name="performed_on"]`, (e) => (e.value = "2026-11-27"));
+await fill(editForm, { status: "completed" });
+await saveEdit();
+
 step("a completed experiment cannot go back to planned (even forcing the option)");
-await page.waitForFunction(() => document.querySelectorAll("section form [name=status] option").length === 2, { timeout: 10000 });
-assert.deepEqual(await page.$$eval("section form [name=status] option", (o) => o.map((x) => x.value)), ["completed", "failed"]);
-await page.$eval("section form [name=status]", (s) => { s.add(new Option("Planificado", "planned")); s.value = "planned"; });
-await post(() => clickButton("Guardar"));
+await page.waitForFunction(() => document.querySelectorAll("#capture-edit [name=status] option").length === 2, { timeout: 10000 });
+assert.deepEqual(await page.$$eval(`${editForm} [name=status] option`, (o) => o.map((x) => x.value)), ["completed", "failed"]);
+await page.$eval(`${editForm} [name=status]`, (s) => { s.add(new Option("Planificado", "planned")); s.value = "planned"; });
+await saveEdit();
 await waitText("no vuelve a planificado");
 await page.goto(newVersionUrl, { waitUntil: "networkidle0" });
 await waitText("cantidades y productos congelados");
 
+// --- Experiment report ----------------------------------------------------------------------
+step("report: compare with the earlier run of the original recipe");
+const referenceId = completedExperiment.split("/").at(-1);
+await page.goto(experimentUrl, { waitUntil: "networkidle0" });
+await openDetails("Editar datos del experimento");
+await page.select(`${editForm} [name=baseline_experiment_id]`, referenceId);
+await saveEdit();
+await waitText("Comparado con");
+assert.match(await text(), /Cambia/, "what changes against the reference (the quantity edited above)");
+
+step("report: two evaluators here, one on the reference");
+const evaluate = async (scores) => {
+  await openDetails("Registrar evaluación sensorial");
+  await fill("#capture-evaluation form", scores);
+  await post(() => page.click("#capture-evaluation form button[type=submit]"));
+  await page.waitForFunction((ev) => document.querySelector("table")?.closest("section") && document.body.innerText.includes(ev), {}, scores.evaluator);
+};
+await evaluate({ evaluator: "e2e-ana", score__overall: "8", score__dulzor: "6", comment: "Más intenso" });
+await evaluate({ evaluator: "e2e-luis", score__overall: "7", score__dulzor: "5" });
+await page.goto(BASE + completedExperiment, { waitUntil: "networkidle0" });
+await evaluate({ evaluator: "e2e-ana", score__overall: "6", score__dulzor: "4" });
+await page.goto(experimentUrl, { waitUntil: "networkidle0" });
+const report = await text();
+assert.match(report, /7[.,]5 \/ 10/, "overall mean of the two evaluators");
+assert.match(report, /▲ \+1[.,]5 vs referencia/, "overall difference against the reference");
+assert.doesNotMatch(
+  await page.$eval('[aria-label="Cifras clave"] > div', (tile) => tile.innerText),
+  /\((mejor|peor)\)/,
+  "one evaluation on the reference: the score difference is not called better or worse",
+);
+assert.equal(await page.$$eval("figure svg[role=img] g > title", (t) => t.length), 2, "dot scale: Global and dulzor");
+assert.match(await page.$eval("figure svg[role=img]", (s) => s.getAttribute("aria-label")), /Global: media 7[.,]5.*referencia 6/);
+assert.match(report, /Evaluado por 2 personas/);
+await screenshot("experiment-report");
+
+step("report: a conclusion and the hypothesis verdict");
+await openDetails("Editar datos del experimento");
+const hypothesisId = await page.$eval(`${editForm} [name=hypothesis_id] option:nth-child(2)`, (o) => o.value);
+await page.select(`${editForm} [name=hypothesis_id]`, hypothesisId);
+await saveEdit();
+await waitText("Estado actual de la hipótesis");
+const verdictSelect = "section form [name=status]";
+const originalVerdict = await page.$eval(verdictSelect, (s) => s.value);
+await openDetails("Añadir conclusión");
+await fill("#capture-conclusion form", { statement: "Prueba e2e: la versión nueva puntúa más alto." });
+await post(() => page.click("#capture-conclusion form button[type=submit]"));
+await waitText("Prueba e2e: la versión nueva puntúa más alto.");
+await page.select(verdictSelect, "supported");
+await post(() => clickButton("Guardar veredicto"));
+await waitText("(considera todos los experimentos): Respaldada");
+
+step("report: the print view hides navigation and capture");
+await page.emulateMediaType("print");
+assert.deepEqual(
+  await page.evaluate(() => [
+    document.querySelector("header:has(nav)").checkVisibility(),
+    document.querySelector("#capture-edit").checkVisibility(),
+    document.querySelector("#section-4").checkVisibility(),
+  ]),
+  [false, false, true],
+  "print shows the report, not the navigation or the capture forms",
+);
+await screenshot("experiment-report-print");
+await page.emulateMediaType("screen");
+
+step("comparator: grouped bars and the tables");
+await page.goto(`${projectUrl}/compare?e=${experimentId}&e=${referenceId}&e=not-a-uuid`, { waitUntil: "networkidle0" });
+await page.waitForSelector(".recharts-surface", { timeout: 10000 });
+const comparison = await text();
+assert.match(comparison, /Composición/);
+assert.match(comparison, /7[.,]5 \(n=2, desv\. 0[.,]71\)/, "overall with its n and spread");
+assert.match(comparison, /6 \(n=1\)/, "one evaluation: no spread");
+assert.ok(await page.$("tr.font-semibold .badge"), "rows that change are marked «Cambia»");
+await screenshot("compare");
+
+step("clean up: verdict, conclusion and the reference's scores");
+await page.goto(experimentUrl, { waitUntil: "networkidle0" });
+await page.select(verdictSelect, originalVerdict);
+await post(() => clickButton("Guardar veredicto"));
+await post(() => page.click("section li form button[type=submit]"));
+await page.waitForFunction(() => !document.body.innerText.includes("Prueba e2e: la versión nueva"));
+await page.goto(BASE + completedExperiment, { waitUntil: "networkidle0" });
+await post(() =>
+  page.evaluate(() =>
+    [...document.querySelectorAll("tr")].find((r) => r.innerText.startsWith("e2e-ana"))?.querySelector("button").click(),
+  ),
+);
+await page.waitForFunction(() => !document.body.innerText.includes("e2e-ana"));
+
 step("clean up: delete the experiment, then the new version");
-await page.goto(newVersionUrl, { waitUntil: "networkidle0" });
-const expHref = await page.$eval('ul a[href*="/experiments/"]', (a) => a.getAttribute("href"));
-await page.goto(BASE + expHref, { waitUntil: "networkidle0" });
+await page.goto(experimentUrl, { waitUntil: "networkidle0" });
+await openDetails("Editar datos del experimento");
 await nav(() => clickButton("Borrar experimento"));
 await page.goto(newVersionUrl, { waitUntil: "networkidle0" });
 await openDetails("Editar receta");

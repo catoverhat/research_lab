@@ -83,4 +83,16 @@ test("database errors map to form messages", () => {
     /solo .* DOP/,
   );
   assert.match(dbError({ code: "P0002", message: "formulation not found" }).error!, /ya no existe/);
+  // supabase/migrations/20261127222003_experiment_baseline_and_sensory_stats.sql
+  assert.match(
+    dbError({ code: "23514", message: "sensory evaluations need a completed or failed experiment" }).error!,
+    /realizado o fallido/,
+  );
+  assert.match(
+    dbError({
+      code: "23514",
+      message: 'new row for relation "experiments" violates check constraint "experiments_baseline_not_self"',
+    }).error!,
+    /consigo mismo/,
+  );
 });

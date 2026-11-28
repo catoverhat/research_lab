@@ -4,7 +4,8 @@ import { experimentSchema, isRecorded, newExperimentSchema } from "./experiments
 import { formulationSchema } from "./formulations/schema.ts";
 
 const recipe = { name: "", status: "draft", servings: "", serving_size: "", serving_unit: "", instructions: "", notes: "" };
-const run = { hypothesis_id: "", status: "planned", performed_on: "", conditions: "", observations: "" };
+// The edit form always sends "Comparar con" (blank = no reference); the create form does not.
+const run = { hypothesis_id: "", baseline_experiment_id: "", status: "planned", performed_on: "", conditions: "", observations: "" };
 
 test("a serving size needs its unit, and the other way round", () => {
   assert.equal(formulationSchema.safeParse(recipe).success, true);

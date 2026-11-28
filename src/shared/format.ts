@@ -10,6 +10,21 @@ export const num = (value: number | null | undefined, digits = 2) =>
 
 export const text = (value: string | null | undefined) => value || dash;
 
+/** A difference with its sign: "+1,5" / "−0,5" / "0" (true minus sign, readable at a glance). */
+export const signed = (value: number | null | undefined, digits = 1) => {
+  if (value == null) return dash;
+  const abs = num(Math.abs(value), digits);
+  return value > 0 ? `+${abs}` : value < 0 ? `−${abs}` : abs;
+};
+
+/** "+25%" / "−10%" (the same true minus sign as `signed`). */
+export const percent = (ratio: number | null | undefined) =>
+  ratio == null
+    ? dash
+    : new Intl.NumberFormat("es-DO", { style: "percent", maximumFractionDigits: 0, signDisplay: "exceptZero" })
+        .format(ratio)
+        .replace("-", "−");
+
 // A stored date ("2026-11-27") is a calendar day, so it is read and shown in UTC to keep the same day.
 const dayFormat = new Intl.DateTimeFormat("es-DO", { timeZone: "UTC", day: "2-digit", month: "2-digit", year: "numeric" });
 

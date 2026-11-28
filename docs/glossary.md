@@ -40,5 +40,12 @@ Un término, un significado. La UI usa la columna "Término". El código y la ba
 | Planificado | `status = 'planned'` | Experimento que aún no se hizo. Puede no tener fecha |
 | Realizado / fallido | `status = 'completed'` / `'failed'` | Experimento registrado: ya es historia. Necesita fecha y no vuelve a planificado ni a cancelado; si se registró por error, se borra |
 | Congelada | — | Receta con al menos un experimento realizado o fallido. Su composición ya no cambia; para cambiarla, versión nueva |
-| Evaluación sensorial | `sensory_evaluations` | Una puntuación de 0 a 10 por evaluador y atributo (amargor, dulzor, textura…). `overall` es la nota global |
+| Evaluación sensorial | `sensory_evaluations` | Una puntuación de 0 a 10 por evaluador y atributo (amargor, dulzor, textura…). `overall` es la nota global ("Global" en la UI). Solo en experimentos realizados o fallidos |
+| Evaluador | `sensory_evaluations.evaluator` | Quien puntúa: un nombre o un código. Volver a registrar al mismo evaluador corrige sus notas |
+| Referencia ("Comparar con") | `experiments.baseline_experiment_id` | El experimento contra el que se leen los resultados de otro: su control. Se elige a propósito; la sugerencia es el último experimento de la versión anterior de la receta |
+| Qué cambia | — | La diferencia de composición entre la receta de un experimento y la de su referencia: las variables del experimento |
+| Réplica | — | Un experimento con la misma receta que su referencia: repite la prueba para ver si el resultado se sostiene |
+| Informe de experimento | — | La página de un experimento: objetivo e hipótesis, diseño, materiales y método, resultados, observaciones, conclusiones y limitaciones. Se imprime sin los formularios |
+| Conclusión | `findings` (con `experiment_id`) | Un hallazgo que sale de un experimento, con su nivel de evidencia y, si aplica, la hipótesis que respalda o refuta |
+| Veredicto | `hypotheses.status` | El estado de una hipótesis tras la evidencia: respaldada, refutada o inconclusa |
 | Coste a precios de su fecha | `v_experiment_summary` | El coste de un experimento con el último precio visto en su fecha o antes. Los precios posteriores no lo cambian |

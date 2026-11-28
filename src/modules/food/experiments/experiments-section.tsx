@@ -26,8 +26,11 @@ export async function ExperimentsSection({ supabase, projectId }: { supabase: Cl
   const runs = must(experiments);
 
   return (
-    <section className="card">
-      <h2>Experimentos</h2>
+    <section id="experimentos" className="card">
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <h2>Experimentos</h2>
+        {runs.length >= 2 && <Link href={`/projects/${projectId}/compare`}>Comparar experimentos</Link>}
+      </div>
       {runs.length === 0 ? (
         <p className="muted">Aún no hay experimentos.</p>
       ) : (

@@ -37,6 +37,6 @@ Necesita:
 - el usuario local `local@research-lab.test` con la contraseña `local-dev-password`, u otro indicado con `E2E_EMAIL` y `E2E_PASSWORD`;
 - la app compilada y en marcha: `pnpm build` y luego `pnpm start`.
 
-Busca el navegador en las rutas habituales; si no lo encuentra, indícalo con `E2E_BROWSER`.
+Busca el navegador en las rutas habituales; si no lo encuentra, indícalo con `E2E_BROWSER`. Con `E2E_SCREENSHOTS=<carpeta>` guarda capturas de página completa del informe de experimento (en pantalla y al imprimir), del comparador y del historial de precios, para revisar las gráficas a ojo.
 
 Despliegue y reglas: [AGENTS.md](AGENTS.md). Modelo de datos: [docs/database-design.md](docs/database-design.md).

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { EvidenceSection } from "@/core/findings/evidence-section";
 import { updateProject } from "@/core/projects/actions";
 import { ProjectFields } from "@/core/projects/project-fields";
 import { projectStatus } from "@/core/projects/schema";
@@ -38,6 +39,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ projec
           </div>
         </ActionForm>
       </details>
+      <EvidenceSection supabase={supabase} projectId={project.id} />
       {/* Food module. Other research types will show their own sections here. */}
       <FormulationsSection supabase={supabase} projectId={project.id} />
       <ExperimentsSection supabase={supabase} projectId={project.id} />

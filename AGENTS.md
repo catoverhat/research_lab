@@ -24,7 +24,7 @@ Principios tomados de [ub-mode](https://github.com/unclebob/ub-mode) que este pr
 
 ## Alcance actual
 
-Fase 3: frontend Next.js (auth y CRUD), ya hecho en local y pendiente de publicar. **No** construyas dashboard (fase 4) ni integración con IA (fase 5) hasta que el plan lo indique. No añadas dependencias que la fase actual no necesite.
+Fase 3 (frontend: auth y CRUD) publicada en Vercel. Fase 4 (experimentación y análisis: informe de experimento, comparador y gráficas) hecha en local. Después viene el rediseño visual con Stitch (4b). **No** construyas integración con IA (fase 5) hasta que el plan lo indique. No añadas dependencias que la fase actual no necesite. Las gráficas siguen la skill de visualización de datos (`dataviz`): cárgala antes de tocar `src/shared/charts/`.
 
 Versiones: usa siempre la última versión estable de cada herramienta y dependencia (Next.js, Supabase CLI, TypeScript, pnpm…). Antes de subir una versión mayor, lee su guía oficial de migración.
 
