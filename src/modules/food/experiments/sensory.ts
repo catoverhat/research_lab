@@ -1,7 +1,36 @@
 // Sensory evaluation: one evaluator scores several attributes (0-10) of one run.
 
-/** Attributes offered by default; projects add their own. "overall" is the overall score (glossary). */
-export const defaultAttributes = ["overall", "sabor", "aroma", "dulzor", "amargor", "textura", "apariencia"];
+type Scale = { kind: "liking" | "intensity"; what?: string; low: string; high: string };
+
+/**
+ * What each default attribute measures, so every evaluator scores the same thing (glossary).
+ * Liking: how much it is liked. Intensity: how much of it there is, where higher is not better.
+ * "overall" is the overall score.
+ */
+export const attributeScales: Record<string, Scale> = {
+  overall: { kind: "liking", what: "Cuánto gusta en conjunto.", low: "no gusta nada", high: "gusta muchísimo" },
+  apariencia: { kind: "liking", what: "Cuánto gusta cómo se ve.", low: "no gusta nada", high: "gusta muchísimo" },
+  sabor: { kind: "intensity", what: "Fuerza del sabor, no si gusta.", low: "apenas sabe", high: "sabor muy intenso" },
+  aroma: { kind: "intensity", low: "sin aroma", high: "aroma muy intenso" },
+  dulzor: { kind: "intensity", low: "nada dulce", high: "muy dulce" },
+  amargor: { kind: "intensity", low: "nada amargo", high: "muy amargo" },
+  espesor: { kind: "intensity", what: "Qué tan espeso se siente al probarlo.", low: "muy líquido", high: "muy espeso" },
+};
+
+/** Attributes offered by default; projects add their own. */
+export const defaultAttributes = Object.keys(attributeScales);
+
+export const isLiking = (attribute: string) => attributeScales[attribute]?.kind === "liking";
+
+/** What the attribute measures and its anchors; one added by a project is read as intensity. */
+export const scaleHint = (attribute: string) => {
+  const s = attributeScales[attribute];
+  return s ? [s.what, `0 = ${s.low} · 10 = ${s.high}`].filter(Boolean).join(" ") : "Intensidad: 0 = nada · 10 = mucho";
+};
+
+/** How to read the scores, wherever they are shown. */
+export const scaleNote =
+  "Global y Apariencia miden agrado (0 = no gusta nada, 10 = gusta muchísimo). Los demás atributos miden intensidad (0 = nada, 10 = mucho): más alto no significa mejor.";
 
 /** Display name: "overall" is "Global"; others start with a capital ("dulzor" -> "Dulzor"). */
 export const attributeLabel = (attribute: string) =>

@@ -6,7 +6,7 @@ import { date, label, missing, money, num, productLabel, unitLabel } from "@/sha
 import { must, type Client } from "@/shared/supabase/server";
 import { compositionMatrix, type Line } from "./report/compare";
 import { experimentStatus } from "./schema";
-import { attributeLabel } from "./sensory";
+import { attributeLabel, scaleNote } from "./sensory";
 
 const nutrients = [
   ["energy_kcal", "Energía", "kcal"],
@@ -106,6 +106,7 @@ export async function Comparison({ supabase, projectId, runs }: { supabase: Clie
           <p className="muted">Ninguno de estos experimentos tiene evaluaciones todavía.</p>
         ) : (
           <>
+            <p className="muted">{scaleNote}</p>
             {runs.length > maxSeries && (
               <p role="status" className="warning">
                 La gráfica muestra los {maxSeries} primeros experimentos; la tabla, los {runs.length}.

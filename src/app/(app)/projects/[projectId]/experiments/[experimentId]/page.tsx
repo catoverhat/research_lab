@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { date, label, missing, money, num, signed } from "@/shared/format";
+import { displayName, sessionClaims } from "@/core/auth/user";
 import { requireUser } from "@/shared/supabase/server";
 import { ActionForm, SubmitButton } from "@/shared/ui/form";
 import { PrintButton } from "@/shared/ui/print-button";
@@ -40,7 +41,8 @@ export async function generateMetadata({ params }: Props) {
 export default async function ExperimentPage({ params }: Props) {
   const { projectId, experimentId } = await params;
   const supabase = await requireUser();
-  const r = await loadExperimentReport(supabase, projectId, experimentId);
+  const [r, claims] = await Promise.all([loadExperimentReport(supabase, projectId, experimentId), sessionClaims(supabase)]);
+  const me = displayName(claims);
   if (!r) notFound();
 
   const { experiment: e, summary: s, reference: ref, formulation: f } = r;
@@ -121,7 +123,7 @@ export default async function ExperimentPage({ params }: Props) {
         {recorded ? (
           <details id="capture-evaluation" className="card">
             <summary>Registrar evaluación sensorial</summary>
-            <EvaluationForm r={r} experimentId={experimentId} />
+            <EvaluationForm r={r} experimentId={experimentId} me={me} />
           </details>
         ) : (
           <p className="muted">La evaluación sensorial se registra cuando el experimento está realizado o fallido.</p>

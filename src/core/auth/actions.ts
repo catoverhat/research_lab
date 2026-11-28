@@ -1,9 +1,10 @@
 "use server";
 
+import { refresh } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { type FormState, parseForm } from "@/shared/forms";
-import { createClient } from "@/shared/supabase/server";
+import { createClient, requireUser } from "@/shared/supabase/server";
 import { authMessage } from "./messages";
 
 const signInSchema = z.object({
@@ -25,6 +26,26 @@ export async function signIn(_: FormState, formData: FormData): Promise<FormStat
   });
   if (error) return { error: authMessage(error) };
   redirect("/");
+}
+
+// Blank clears the name (the email is used instead).
+const nameSchema = z.object({
+  name: z.string().trim().max(80, "Máximo 80 caracteres").transform((v) => v || null),
+});
+
+// A display name only (user_metadata is editable by the user): never used to grant access.
+export async function updateName(_: FormState, formData: FormData): Promise<FormState> {
+  const supabase = await requireUser();
+  const { data, state } = parseForm(nameSchema, formData);
+  if (state) return state;
+
+  const { error } = await supabase.auth.updateUser({ data: { name: data.name } });
+  if (error) return { error: authMessage(error) };
+  // The name travels in the session token: a fresh one lets every page see it now.
+  const refreshed = await supabase.auth.refreshSession();
+  refresh();
+  if (refreshed.error) return { error: "Se guardó el nombre, pero aparecerá al volver a entrar." };
+  return { ok: true };
 }
 
 export async function signOut() {

@@ -40,8 +40,10 @@ Un término, un significado. La UI usa la columna "Término". El código y la ba
 | Planificado | `status = 'planned'` | Experimento que aún no se hizo. Puede no tener fecha |
 | Realizado / fallido | `status = 'completed'` / `'failed'` | Experimento registrado: ya es historia. Necesita fecha y no vuelve a planificado ni a cancelado; si se registró por error, se borra |
 | Congelada | — | Receta con al menos un experimento realizado o fallido. Su composición ya no cambia; para cambiarla, versión nueva |
-| Evaluación sensorial | `sensory_evaluations` | Una puntuación de 0 a 10 por evaluador y atributo (amargor, dulzor, textura…). `overall` es la nota global ("Global" en la UI). Solo en experimentos realizados o fallidos |
-| Evaluador | `sensory_evaluations.evaluator` | Quien puntúa: un nombre o un código. Volver a registrar al mismo evaluador corrige sus notas |
+| Evaluación sensorial | `sensory_evaluations` | Una puntuación de 0 a 10 por evaluador y atributo. `overall` es la nota global ("Global" en la UI). Solo en experimentos realizados o fallidos. Cada atributo mide agrado o intensidad (ver abajo); la definición vive en `src/modules/food/experiments/sensory.ts` |
+| Agrado | atributos `overall`, `apariencia` | Cuánto gusta: 0 = no gusta nada, 10 = gusta muchísimo. Solo aquí más alto es mejor |
+| Intensidad | atributos `sabor`, `aroma`, `dulzor`, `amargor`, `espesor` y los que añade cada proyecto | Cuánto se nota, no si gusta: 0 = nada, 10 = mucho (dulzor 10 = muy dulce; espesor 10 = muy espeso). Más alto no es mejor |
+| Evaluador | `sensory_evaluations.evaluator` | Quien prueba y puntúa (no quien preparó la receta): un nombre, o un código si la cata es anónima. Se propone el nombre de la persona usuaria (Cuenta) mientras no haya evaluado ese experimento. Volver a registrar al mismo evaluador corrige sus notas |
 | Referencia ("Comparar con") | `experiments.baseline_experiment_id` | El experimento contra el que se leen los resultados de otro: su control. Se elige a propósito; la sugerencia es el último experimento de la versión anterior de la receta |
 | Qué cambia | — | La diferencia de composición entre la receta de un experimento y la de su referencia: las variables del experimento |
 | Réplica | — | Un experimento con la misma receta que su referencia: repite la prueba para ver si el resultado se sostiene |

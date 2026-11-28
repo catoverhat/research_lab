@@ -4,7 +4,7 @@ import { num, text } from "@/shared/format";
 import { ActionForm, Field, SubmitButton } from "@/shared/ui/form";
 import { Options } from "@/shared/ui/options";
 import { deleteEvaluation, saveEvaluation } from "../actions";
-import { attributeLabel, defaultAttributes } from "../sensory";
+import { attributeLabel, defaultAttributes, isLiking, scaleHint } from "../sensory";
 import type { ExperimentReport } from "./data";
 
 /** Scores by evaluator (rows) and attribute (columns): the raw data behind the statistics. */
@@ -58,31 +58,50 @@ export function EvaluationsTable({ r, experimentId }: { r: ExperimentReport; exp
   );
 }
 
-/** One evaluator's scores; blank means not scored. Re-sending an evaluator corrects their scores. */
-export function EvaluationForm({ r, experimentId }: { r: ExperimentReport; experimentId: string }) {
+/**
+ * One evaluator's scores; blank means not scored. Re-sending an evaluator corrects their scores.
+ * The signed-in person is proposed as evaluator until they have scored this run, so entering
+ * someone else's scores next never overwrites their own by accident.
+ */
+export function EvaluationForm({ r, experimentId, me }: { r: ExperimentReport; experimentId: string; me: string }) {
   const attributes = [...new Set([...defaultAttributes, ...r.knownAttributes])];
   const evaluators = [...new Set(r.evaluations.map((e) => e.evaluator))];
+  const scoreField = (a: string) => (
+    <Field key={a} label={attributeLabel(a)} name={`score__${a}`} hint={scaleHint(a)}>
+      <input name={`score__${a}`} type="number" min="0" max="10" step="0.5" inputMode="decimal" />
+    </Field>
+  );
   return (
     <ActionForm action={saveEvaluation.bind(null, experimentId)} className="form-grid" resetOnSuccess>
-      <Field label="Evaluador" name="evaluator" hint="Nombre o código. Si ya evaluó, esta evaluación sustituye a la anterior.">
-        <input name="evaluator" list="evaluator-names" autoComplete="off" required />
+      <Field
+        label="Evaluador"
+        name="evaluator"
+        hint="Quien prueba y puntúa (no quien preparó la receta). Usa un código, como P1, si la cata es anónima. Si ya evaluó, sustituye su evaluación anterior."
+      >
+        <input name="evaluator" list="evaluator-names" autoComplete="off" required defaultValue={evaluators.includes(me) ? "" : me} />
       </Field>
       <datalist id="evaluator-names">
         {evaluators.map((e) => (
           <option key={e} value={e} />
         ))}
       </datalist>
-      <fieldset className="grid gap-3 sm:col-span-full sm:grid-cols-4">
-        <legend className="mb-1 text-sm font-medium">Notas de 0 a 10 (vacío = no evaluado)</legend>
-        {attributes.map((a) => (
-          <Field key={a} label={attributeLabel(a)} name={`score__${a}`}>
-            <input name={`score__${a}`} type="number" min="0" max="10" step="0.5" inputMode="decimal" />
-          </Field>
-        ))}
+      <p className="muted sm:col-span-full">Notas de 0 a 10, de medio en medio punto. Vacío = no evaluado (no es un 0).</p>
+      <fieldset className="grid gap-3 sm:col-span-full sm:grid-cols-2 lg:grid-cols-3">
+        <legend className="mb-1 text-sm font-medium">Agrado: cuánto gusta</legend>
+        {attributes.filter(isLiking).map(scoreField)}
+      </fieldset>
+      <fieldset className="grid gap-3 sm:col-span-full sm:grid-cols-2 lg:grid-cols-3">
+        <legend className="mb-1 text-sm font-medium">Intensidad: cuánto se nota</legend>
+        <p className="muted sm:col-span-full">Más alto = más, no mejor. No importa si te gusta.</p>
+        {attributes.filter((a) => !isLiking(a)).map(scoreField)}
       </fieldset>
       {[1, 2].map((n) => (
         <div key={n} className="grid grid-cols-2 gap-2">
-          <Field label={`Otro atributo ${n}`} name={`extra_attribute_${n}`}>
+          <Field
+            label={`Otro atributo ${n}`}
+            name={`extra_attribute_${n}`}
+            hint={n === 1 ? "Se puntúa como intensidad (0 = nada, 10 = mucho). Ej.: acidez, salinidad." : undefined}
+          >
             <input name={`extra_attribute_${n}`} autoComplete="off" />
           </Field>
           <Field label="Nota" name={`extra_score_${n}`}>

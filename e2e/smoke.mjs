@@ -345,6 +345,13 @@ const evaluate = async (scores) => {
   await post(() => page.click("#capture-evaluation form button[type=submit]"));
   await page.waitForFunction((ev) => document.querySelector("table")?.closest("section") && document.body.innerText.includes(ev), {}, scores.evaluator);
 };
+await openDetails("Registrar evaluación sensorial");
+assert.equal(
+  await page.$eval("#capture-evaluation [name=evaluator]", (e) => e.value),
+  EMAIL.split("@")[0],
+  "the signed-in person (no name saved: the start of the email) is proposed as evaluator",
+);
+await screenshot("evaluation-form");
 await evaluate({ evaluator: "e2e-ana", score__overall: "8", score__dulzor: "6", comment: "Más intenso" });
 await evaluate({ evaluator: "e2e-luis", score__overall: "7", score__dulzor: "5" });
 await page.goto(BASE + completedExperiment, { waitUntil: "networkidle0" });
@@ -448,6 +455,16 @@ await nav(() => page.click('a[href="/account"]'));
 await page.waitForFunction(() => document.querySelectorAll("tbody tr").length === 1);
 await clickButton("Borrar");
 await waitText("Aún no tienes passkeys.");
+
+step("a name in Cuenta is saved; blank clears it");
+const nameValue = () => page.$eval('form [name="name"]', (e) => e.value);
+for (const name of ["Persona e2e", ""]) {
+  await fill("form", { name });
+  await post(() => clickButton("Guardar nombre"));
+  await waitText("Guardado.");
+  await page.reload({ waitUntil: "networkidle0" });
+  assert.equal(await nameValue(), name, "the saved name is shown after a reload");
+}
 
 await browser.close();
 const relevant = problems.filter((p) => !/turnstile|challenges\.cloudflare|Private Access Token|status of 401/i.test(p));

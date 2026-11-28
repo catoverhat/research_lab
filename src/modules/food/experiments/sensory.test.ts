@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { attributeKey, attributeLabel, parseEvaluation } from "./sensory.ts";
+import { attributeKey, attributeLabel, isLiking, parseEvaluation, scaleHint } from "./sensory.ts";
 
 const form = (entries: [string, string][]) => {
   const fd = new FormData();
@@ -60,4 +60,14 @@ test("overall is the global score", () => {
   assert.equal(attributeKey(" GLOBAL "), "overall");
   assert.equal(attributeLabel("overall"), "Global");
   assert.equal(attributeLabel("amargor"), "Amargor");
+});
+
+test("each attribute says what 0 and 10 mean: liking or intensity", () => {
+  assert.equal(isLiking("overall"), true);
+  assert.equal(isLiking("dulzor"), false);
+  assert.equal(scaleHint("dulzor"), "0 = nada dulce · 10 = muy dulce");
+  assert.equal(scaleHint("overall"), "Cuánto gusta en conjunto. 0 = no gusta nada · 10 = gusta muchísimo");
+  // An attribute a project adds is read as intensity.
+  assert.equal(isLiking("acidez"), false);
+  assert.equal(scaleHint("acidez"), "Intensidad: 0 = nada · 10 = mucho");
 });

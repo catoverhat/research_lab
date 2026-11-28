@@ -4,7 +4,7 @@ import { evidenceLevel, hypothesisStatus } from "@/core/findings/schema";
 import { DotScale } from "@/shared/charts/dot-scale";
 import { date, label, missing, money, num, percent, productLabel, signed, text, unitLabel } from "@/shared/format";
 import { experimentStatus, isRecorded } from "../schema";
-import { attributeLabel } from "../sensory";
+import { attributeLabel, scaleNote } from "../sensory";
 import { compositionDiff, delta, sensoryRows } from "./compare";
 import type { ExperimentReport } from "./data";
 
@@ -208,6 +208,7 @@ export function ResultsSection({ r, evaluationsTable }: { r: ExperimentReport; e
     <Section n={4} title="Resultados">
       <div className="space-y-3">
         <h3>Evaluación sensorial (escala 0-10)</h3>
+        {rows.length > 0 && <p className="muted">{scaleNote}</p>}
         {rows.length === 0 ? (
           <p className="muted">
             Sin evaluaciones todavía.
